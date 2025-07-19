@@ -1,3 +1,5 @@
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,31 +7,75 @@ using UnityEngine.InputSystem;
 
 public class CarController : MonoBehaviour {
 
-    public Wheel[] wheels;
-    public Vector2 moveInput;
-    public float powerMultiplier = 1;
+    public Rigidbody rigidbody;
+    public CarStats carStats;
+    public Wheel[] wheels;  //todo will need a reliable way of knowing how many weels are for steering , and how many wheels are for handbrake
     public float maxSteer = 30, wheelbase = 2.5f, trackwidth = 1.5f;
+    public float steerModifier = 1;
+    //cam
+
+    public CamraController camraController;
+    private int cameraindexPos = 0;
+
+    #region common
+
+    private Vector2 moveInput;
+    public float wheelTurnLerpSpeed = 1;
+    public bool SpacebarPressed;
+
+    #endregion
+
+
+    void Start() {
+        carStats = GetComponent<CarStats>();
+        rigidbody = GetComponent<Rigidbody>();
+    }
+
 
     public void OnMove(InputValue value) {
         moveInput = value.Get<Vector2>();
     }
 
+    public void OnJump(InputValue input) {
+        SpacebarPressed = input.Get<float>() == 1; // this will set the spaccebar pressed bool to true when input is 1
+    }
+
+    public void OnInteractJump(InputValue input) {
+        print("interacting");
+    }
+
+    void Update() {
+        if (Input.GetKeyDown(KeyCode.Tab) && camraController) {
+            cameraindexPos = cameraindexPos < 2 ? cameraindexPos + 1 : 0;
+
+            camraController.switchPositions(carStats.camraPositions[cameraindexPos]);
+        }
+
+    }
+
     void FixedUpdate() {
+
+        SpacebarPressed = Input.GetKey(KeyCode.Space); // this will set the spacebar bool to true depending on keypress space
+
+        handleSteering();
+
+
+        if (!carStats) return;
+
         //ToDo: add checks if wheels are present
-        foreach (var wheel in wheels) {
-            wheel.collider.motorTorque = moveInput.y * powerMultiplier;
+
+        for (int i = 0; i < wheels.Length; i++) {
+            if (i > 1) {
+                // rear wheel
+                wheels[i].collider.motorTorque = SpacebarPressed ? 0 : moveInput.y * carStats.MaxPowerNM;
+                wheels[i].collider.brakeTorque = !SpacebarPressed ? 0 : 1000;
+            } else {
+                wheels[i].collider.motorTorque = moveInput.y * carStats.MaxPowerNM;
+
+                //fron wheels for now
+            }
         }
-        float steer = moveInput.x * maxSteer;
-        //ToDo: add math lerp or some sort of interpolation
-        if (moveInput.x > 0) {
-            wheels[0].collider.steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / (trackwidth / 2 + Mathf.Tan(Mathf.Deg2Rad * steer) * wheelbase));
-            wheels[1].collider.steerAngle = steer;
-        } else if (moveInput.x < 0) {
-            wheels[0].collider.steerAngle = steer;
-            wheels[1].collider.steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / (-trackwidth / 2 + Mathf.Tan(Mathf.Deg2Rad * steer) * wheelbase));
-        } else {
-            wheels[0].collider.steerAngle = wheels[1].collider.steerAngle = 0;
-        }
+
         for (int i = 0; i < wheels.Length; i++) {
             Quaternion Rot;
             Vector3 Pos;
@@ -46,6 +92,30 @@ public class CarController : MonoBehaviour {
             //ToDo: this can be used to rotate the brake calipers
             //wheels[i].collider.transform.localRotation = Quaternion.Euler(0 , wheels[i].collider.transform.rotation.eulerAngles.y, 0);
         }
+
+    }
+
+
+    void handleSteering() {
+
+
+        if (moveInput.x > 0 ) {
+            wheels[0].collider.steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / (maxSteer - (trackwidth / 2))) * moveInput.x;
+            wheels[1].collider.steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / (maxSteer + (trackwidth / 2))) * moveInput.x;
+        } else if (moveInput.x < 0 ) {                                                          
+            wheels[0].collider.steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / (maxSteer + (trackwidth / 2))) * moveInput.x;
+            wheels[1].collider.steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / (maxSteer - (trackwidth / 2))) * moveInput.x;
+        } else {
+            wheels[0].collider.steerAngle =0;
+            wheels[1].collider.steerAngle =0;
+        }
+    
+
+
+
+        //velocity = rigidbody.linearVelocity.magnitude;
+
+
     }
 
 }
