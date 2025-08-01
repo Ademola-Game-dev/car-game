@@ -13,6 +13,8 @@ public class CarStats : MonoBehaviour {
     [Range(1, 5)] public float MaxSteerAngle = 4;
     public driveMode driveMode = driveMode.allWheelDrive;
 
+    public Vector3 lookAtPoint = new Vector3(0, 0, 0);
+
 }
 
 

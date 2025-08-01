@@ -13,8 +13,8 @@ public class trackWaypoints : MonoBehaviour {
     public Color linecolor;
     [Range(0, 1)] public float SphereRadius;
     public List<Transform> nodes = new List<Transform>();
-    [Range(0, 1)] public float arrowHeadLength = 0.25f; // Length of the arrow head lines
-    [Range(10, 40)] public float arrowHeadAngle = 20.0f; // Angle of the arrow head lines=
+    [Range(0, 10)] public float arrowHeadLength = 0.25f; // Length of the arrow head lines
+    [Range(10, 100)] public float arrowHeadAngle = 20.0f; // Angle of the arrow head lines=
 
     private void OnDrawGizmosSelected() {
         if (drawOnlyOnSelected) gizmosLogic();
@@ -23,8 +23,7 @@ public class trackWaypoints : MonoBehaviour {
     private void OnDrawGizmos() {
         if (!drawOnlyOnSelected) gizmosLogic();
 
-    } 
-        
+    }
 
 
     void gizmosLogic() {
