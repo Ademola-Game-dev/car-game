@@ -1,125 +1,94 @@
 using System;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
-
+[RequireComponent(typeof(CarStats))]
+[RequireComponent(typeof(CarStateMachine))]
 public class CarController : MonoBehaviour {
 
     private CarStateMachine stateMachine;
 
-    public Playertype playertype;
-    public Camera camera;
-    public Rigidbody rigidbody;
     public CarStats stats;
     public float maxSteer = 30, wheelbase = 2.5f, trackwidth = 1.5f;
-    public float steerModifier = 1;
-
-    public CamraController camraController;
-    private int cameraindexPos = 0;
 
     #region common
-
-    //inputs 
     private Vector2 moveInput;
     private bool isSpacebarPressed;
-    public float wheelTurnLerpSpeed = 1;
     public bool isShiftPressed;
-
-
+    private Vector2 lerpedmoveInput;
     #endregion
 
+    private Vector2 Velocity = new Vector2(0, 0);
+
     #region debug
-    [Range(0.1f,1f)] public float gizmosSphereDiameter = .4f;
+    [Range(0.1f, 1f)] public float gizmosSphereDiameter = .4f;
     [Range(0, 20)] public float fowDisplaceAmount = 0.1f;
     [Range(0, 20)] public float fowDisplaceLerpSpeed = 1;
     public int inistalFow = 80;
     public bool drawOnlyOnSelected = false;
-
-
     #endregion
 
-
-    [Header("debug")]
-    [Range(0.05f, 1f)] public float steerReducingMultiplier = .3f; // use this to steer less when going quicker , prevent crashing
 
     void Start() {
         stateMachine = GetComponent<CarStateMachine>();
         stats = GetComponent<CarStats>();
-        rigidbody = GetComponent<Rigidbody>();
     }
 
-    public void OnMove(InputValue value) {
-        if (playertype == Playertype.player) {
-            moveInput = value.Get<Vector2>();
-        }
-    }
-
-    public void OnJump(InputValue input) {
-        if (playertype == Playertype.player) {
-            isSpacebarPressed = input.Get<float>() == 1; // this will set the spaccebar pressed bool to true when input is 1
-        }
-    }
+    public void OnMove(InputValue value) => moveInput = value.Get<Vector2>();
+            
+    public void OnJump(InputValue input) => isSpacebarPressed = input.Get<float>() == 1; // this will set the spaccebar pressed bool to true when input is 1
 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Tab) && camraController) {
-            cameraindexPos = cameraindexPos < 2 ? cameraindexPos + 1 : 0;
-            camraController.switchPositions(stats.camraPositions[cameraindexPos]);
-        }
-
+        if (Input.GetKeyDown(KeyCode.Tab)) stateMachine.cameraindexPos = stateMachine.cameraindexPos < 2 ? stateMachine.cameraindexPos + 1 : 0;
+        
     }
 
     void FixedUpdate() {
         if (!stats) return;
-        
-        if (playertype == Playertype.player) {
-            isSpacebarPressed = Input.GetKey(KeyCode.Space);
-            isShiftPressed = Input.GetKey(KeyCode.LeftShift);
-        }
 
-        handleSteering();
-        handleEeffects();
-        translatePwertoWheels();
+        isSpacebarPressed = Input.GetKey(KeyCode.Space);
+        isShiftPressed = Input.GetKey(KeyCode.LeftShift);
+        
+
+        HandleSteering();
+        HandleEeffects();
+        TranslatePwertoWheels();
+
+        stateMachine.KPH = stateMachine.rigidbody.linearVelocity.magnitude * 3.6f;
 
 
 
     }
 
-    void handleSteering() {
+    void HandleSteering() {
 
-        maxSteer = stats.MaxSteerAngle + Mathf.Clamp(steerModifier, 0, 10);
+        //concventional input forwading to the wheel turn logic !
+        lerpedmoveInput =  Vector2.SmoothDamp(lerpedmoveInput, moveInput , ref Velocity, Time.deltaTime * stats.steerDampSpeed) ;
 
-        if (moveInput.x > 0) {
-            stateMachine.wheelColliders[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / (maxSteer - (trackwidth / 2))) * moveInput.x;
-            stateMachine.wheelColliders[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / (maxSteer + (trackwidth / 2))) * moveInput.x;
-        } else if (moveInput.x < 0) {
-            stateMachine.wheelColliders[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / (maxSteer + (trackwidth / 2))) * moveInput.x;
-            stateMachine.wheelColliders[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / (maxSteer - (trackwidth / 2))) * moveInput.x;
+        if (lerpedmoveInput.x > 0) {
+            stateMachine.wheelColliders[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / ((stats.MaxSteerAngle + stateMachine.steerModifier) + (trackwidth / 2))) * lerpedmoveInput.x;
+            stateMachine.wheelColliders[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / ((stats.MaxSteerAngle + stateMachine.steerModifier) - (trackwidth / 2))) * lerpedmoveInput.x;
+        } else if (lerpedmoveInput.x < 0) {
+            stateMachine.wheelColliders[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / ((stats.MaxSteerAngle + stateMachine.steerModifier) - (trackwidth / 2))) * lerpedmoveInput.x;
+            stateMachine.wheelColliders[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / ((stats.MaxSteerAngle + stateMachine.steerModifier) + (trackwidth / 2))) * lerpedmoveInput.x;
         } else {
             stateMachine.wheelColliders[0].steerAngle = 0;
             stateMachine.wheelColliders[1].steerAngle = 0;
         }
 
 
-
-
-        steerModifier = rigidbody.linearVelocity.magnitude * steerReducingMultiplier;
-
-
     }
 
     // this is where we have setters
-    public void setMoveinput(Vector2 _moveInput) {
+    public void SetMoveinput(Vector2 _moveInput) {
         moveInput = _moveInput;
     }
 
-    public void setSpacebarPressed(bool _moveInput) {
+    public void SetSpacebarPressed(bool _moveInput) {
         isSpacebarPressed = _moveInput;
     }
 
-
-    public void translatePwertoWheels() {
+    public void TranslatePwertoWheels() {
 
         switch (stats.driveMode) {
             case driveMode.frontWheelDrive:
@@ -151,34 +120,46 @@ public class CarController : MonoBehaviour {
 
     }
 
-    public void handleEeffects() {
+    public void HandleEeffects() {
         if (isShiftPressed) {
-            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, inistalFow + fowDisplaceAmount, fowDisplaceLerpSpeed * Time.deltaTime);
+
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, inistalFow + fowDisplaceAmount, fowDisplaceLerpSpeed * Time.deltaTime);
         } else {
-            camera.fieldOfView = Mathf.Lerp(camera.fieldOfView, inistalFow, fowDisplaceLerpSpeed * Time.deltaTime);
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, inistalFow, fowDisplaceLerpSpeed * Time.deltaTime);
         }
 
     }
 
-
     // gizmos
     private void OnDrawGizmosSelected() {
-        if (drawOnlyOnSelected) gizmosLogic();
+        if (drawOnlyOnSelected) GizmosLogic();
     }
 
     private void OnDrawGizmos() {
-        if (!drawOnlyOnSelected) gizmosLogic();
+        if (!drawOnlyOnSelected) GizmosLogic();
 
-    } 
+    }
 
-
-        void gizmosLogic() {
+    void GizmosLogic() {
 
         //Gizmos.DrawWireSphere(transform.position + stats.lookAtPoint, gizmosSphereDiameter);
 
 
     }
 
+#region gui
+    [Header("gui")]
+    public float GuiXPos = 0;
+    public float GuiYPos = 0;
+    public float GuiYSpace = 1;
+    public float GuiCellWidth = 200;
+    public float GuiCellHeight = 20;
+    void OnGUI() {
+        float pos = GuiYPos;
+        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), "KPH: " + stateMachine.KPH.ToString("0"));
+        pos += 25f;
+    }
+#endregion
 
 }
 
@@ -186,9 +167,4 @@ public class CarController : MonoBehaviour {
 [System.Serializable]
 public enum WheelType {
     front, rear
-}
-
-[System.Serializable]
-public enum Playertype {
-    player, npc
 }

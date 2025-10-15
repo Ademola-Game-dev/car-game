@@ -1,51 +1,49 @@
 using Unity.Mathematics;
 using UnityEngine;
+using System.Linq;
 
 public class CamraController : MonoBehaviour {
+    private CarStateMachine carStateMachine;
+    private Transform targetTransform;
 
-    //ref
-    private CarStats stats;
+    private Vector2 offset = new Vector2(0, 0);
 
+    [Range(0.1f, 5)] public float siddewaysLerpSpeed = 1;
 
-    public Transform targetTransform;
-    public Vector2 offset;
-    public quaternion offsetRotation;
-    public Vector3 lookOffset;
-    public float smoothSpeed = 0.125f;
+    [Range(0.1f, 2)] public float maxDistanceToTarget = 4;
 
-    [Header("the lower this is the closet the will be")]
-    [Range(2, 8)] public float maxDistanceToTarget = 6f;
-
-    // private
     private float distanceToTarget;
-    public float lerpModifier = 1;
+    private float tmp;
+    private float result;
 
     void Start() {
-        stats = targetTransform.GetComponent<CarStats>();
+        carStateMachine = GameObject.FindGameObjectsWithTag("Player").FirstOrDefault()?.GetComponent<CarStateMachine>();
+        if (carStateMachine == null) throw new System.Exception("no player found");
+        targetTransform = carStateMachine.transform;
+        offset = carStateMachine.CarStats.camraPositions[carStateMachine.cameraindexPos];
+        transform.position = targetTransform.TransformPoint(new Vector3(0, offset.y, offset.x));
     }
+
+
 
     void FixedUpdate() {
-        if (targetTransform == null) return;
+        transform.LookAt(targetTransform.TransformPoint(new Vector3(0, carStateMachine.CarStats.lookAtPoint.y, carStateMachine.CarStats.lookAtPoint.x)));
+        offset = carStateMachine.CarStats.camraPositions[carStateMachine.cameraindexPos];
 
-        transform.position = Vector3.Lerp(transform.position, targetTransform.TransformPoint(new Vector3(0, offset.y, offset.x)), Time.deltaTime * smoothSpeed * lerpModifier);
-        //transform.rotation = Quaternion.Slerp(transform.rotation, targetTransform.rotation * offsetRotation, Time.deltaTime * smoothSpeed );
+        // use this to do the siddeways smoothing follow
+        transform.position = Vector3.Lerp(transform.position,
+                    targetTransform.TransformPoint(new Vector3(0, offset.y, offset.x)),
+                    Time.deltaTime * siddewaysLerpSpeed);
+        
+        //add this so the car dont go too far , since we do lerp earlier for the sideways effect
+        transform.localPosition += transform.forward * (result / 2);  // replace 2 with a greater value to make the rubber bad effect weaker
 
-        if (stats) {
-            transform.LookAt(targetTransform.position + stats.lookAtPoint);
-        } else {
-            transform.LookAt(targetTransform.position + lookOffset);
-        }
-
-        // this will be used to make the camera not stay behing too far from the target
+        //used to calculate dist between cam offset and target
         distanceToTarget = Vector3.Distance(transform.position, targetTransform.position);
-        lerpModifier = Mathf.Clamp(distanceToTarget / maxDistanceToTarget, 1, 20);
+        tmp = distanceToTarget - offset.magnitude;
+        // this will threshold , and then increase exponentially 
+        result = Mathf.Sign(tmp) * Mathf.Pow(Mathf.Max(0f, Mathf.Abs(tmp) - maxDistanceToTarget), 2);
 
-        // todo : add screen shake when going too fast
 
     }
-
-    public void switchPositions(Vector2 newOffset) {
-        offset = newOffset;
-    }
-
 }

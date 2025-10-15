@@ -7,13 +7,25 @@ public class CarStateMachine : MonoBehaviour {
     public WheelCollider[] wheelColliders;
     public Transform[] wheelTransforms;
 
+    public CarStats CarStats;
+    public Rigidbody rigidbody;
 
-    void Start() {
-        findValues();
-    }
+    //camera
+    public int cameraindexPos = 0;
 
 
-    public void findValues() {
+    //car
+    public float KPH = 0;
+
+    // modifires
+    // modifiers are used to modify car properties from helper scripts
+    public float steerModifier = 0;
+
+    void Start() => FindValues();
+    
+
+
+    public void FindValues() {
         foreach (Transform i in gameObject.transform) {
             if (i.transform.name == "carColliders") {
                 wheelColliders = new WheelCollider[i.transform.childCount];
