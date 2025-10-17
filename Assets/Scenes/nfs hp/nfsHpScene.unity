@@ -42231,45 +42231,37 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2521286828735228120, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3396831504517664365, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: m_Name
       value: Ferrari testarosa PREFAB
       objectReference: {fileID: 0}
-    - target: {fileID: 5684482186455399854, guid: d94dd7c448e07428daee036916b9f113, type: 3}
-      propertyPath: MaxSteerAngle
-      value: 2.528
+    - target: {fileID: 3917755264473314781, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5684482186455399854, guid: d94dd7c448e07428daee036916b9f113, type: 3}
-      propertyPath: steerDampMultiplier
-      value: 0.156
+    - target: {fileID: 7229024429951568959, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5684482186455399854, guid: d94dd7c448e07428daee036916b9f113, type: 3}
-      propertyPath: initialSteerDampSpeed
-      value: 10.72
-      objectReference: {fileID: 0}
-    - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
-      propertyPath: clampMinSlip
-      value: 0.514
+    - target: {fileID: 8529919335967720360, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
-      propertyPath: sidewaysValue
-      value: 1.061
+      propertyPath: steeringRadiusModifier
+      value: 0.091
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
-      propertyPath: lerpValueSteer
-      value: 2
+      propertyPath: steeringRadiusMultiplier
+      value: 0.31
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
-      propertyPath: radiusModifier
-      value: 0.185
-      objectReference: {fileID: 0}
-    - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
-      propertyPath: slipMultiplier
-      value: 16.71
-      objectReference: {fileID: 0}
-    - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
-      propertyPath: radiusMultiplier
-      value: 1.227
+      propertyPath: slipSteerRadiusMultiplier
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

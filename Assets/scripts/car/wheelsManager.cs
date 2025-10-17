@@ -14,15 +14,15 @@ public class wheelsManager : MonoBehaviour {
     [Range(.5f, 3)] public float sidewaysValue = 2;
     [Range(.2f, 1f)] public float clampMinSlip = .35f;
 
+
+
     [Header("steering")]
     [Tooltip("more = less steer at high speed !")]
-    [Range(0, 0.5f)] public float radiusModifier;
-    [Tooltip("this will simplty multiply the radiusModifier by this value , steeper curve ")]
-    [Range(1, 2)] public float radiusMultiplier = 1.1f;
+    [Range(0, 0.5f)] public float steeringRadiusModifier;
+    [Tooltip("this will simplty multiply the steeringRadiusModifier by this value , steeper curve ")]
+    [Range(0, 2)] public float steeringRadiusMultiplier = 1.1f;
     [Tooltip("this will add counter steer mod , making it possible to hold the drift and also be able to correct the steer ! , prefered to be set about 10-15 , lowe = less mod = harder to hold the drift")]
-    [Range(0,20)]public float slipMultiplier = 1;
-    
-
+    [Range(0, 20)] public float slipSteerRadiusMultiplier = 1;
 
     private float[] forwardSlip;
     private float[] sidewaysSlip;
@@ -30,10 +30,14 @@ public class wheelsManager : MonoBehaviour {
     private float[] newStiffnessForward;
     private float[] newStiffnessSideways;
     private float sidewaysSplipSim = 0;
+    private float smoothedSidewaysSplipSim;
 
     [Header("visualizers")]
     private float modifiedRadius;
     private float slipRadiusModifier = 1;
+
+    [Header("debug")]
+    private float sidewaysSplipSimLerpSpeed = 1;
 
     void Start() {
         stateMachine = GetComponent<CarStateMachine>();
@@ -71,8 +75,6 @@ public class wheelsManager : MonoBehaviour {
         ManageFriction();
     }
 
-
-
     void ManageFriction() {
 
         sidewaysSplipSim = 0;
@@ -93,23 +95,21 @@ public class wheelsManager : MonoBehaviour {
 
                 forwardSlip[i] = hit.forwardSlip;
                 sidewaysSlip[i] = hit.sidewaysSlip;
-                if(i > 1 ) sidewaysSplipSim += Mathf.Abs(hit.sidewaysSlip); // getting the slip only for the rear wheels , when sideways sliping !
+                if (i > 1) sidewaysSplipSim += Mathf.Abs(hit.sidewaysSlip); // getting the slip only for the rear wheels , when sideways sliping !
             }
         }
-    
 
-        slipRadiusModifier = Mathf.Clamp(Mathf.Abs(sidewaysSplipSim)* slipMultiplier , 0 , modifiedRadius - stateMachine.CarStats.MaxSteerAngle);
-        
-        modifiedRadius = Mathf.Lerp(modifiedRadius, stateMachine.KPH * (radiusModifier * radiusMultiplier ), Time.deltaTime * 2);
+        smoothedSidewaysSplipSim = Mathf.Lerp(smoothedSidewaysSplipSim, sidewaysSplipSim, Time.deltaTime * 2);
+        slipRadiusModifier = Mathf.Clamp(Mathf.Abs(smoothedSidewaysSplipSim) * slipSteerRadiusMultiplier, 0, modifiedRadius - stateMachine.CarStats.MaxSteerAngle);
+        modifiedRadius = Mathf.Lerp(modifiedRadius, stateMachine.KPH * (steeringRadiusModifier * steeringRadiusMultiplier), Time.deltaTime * 2);
 
         stateMachine.steerModifier = modifiedRadius - slipRadiusModifier;
-        
         stateMachine.CarStats.steerDampSpeed = stateMachine.CarStats.initialSteerDampSpeed + (stateMachine.KPH * stateMachine.CarStats.steerDampMultiplier);
 
     }
 
 
-#region gui
+    #region gui
     [Header("gui")]
     public float GuiXPos = 0;
     public float GuiYPos = 0;
@@ -149,12 +149,12 @@ public class wheelsManager : MonoBehaviour {
         foreach (float slipValue in newStiffnessSideways) stiffnessSidewaysString += slipValue.ToString("0.0") + " ";
         GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), stiffnessSidewaysString.TrimEnd() + " stiffnes Sideways");
         pos += GuiYSpace; // No increment needed after the last item
-        
+
         GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), sidewaysSplipSim + " sum of slip");
 
 
 
     }
-#endregion
+    #endregion
 
 }

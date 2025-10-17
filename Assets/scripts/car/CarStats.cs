@@ -6,31 +6,36 @@ using UnityEditor;
 [RequireComponent(typeof(CarStateMachine))]
 public class CarStats : MonoBehaviour {
 
+    #region variables , inspector
     public CarStateMachine carStateMachine;
     public bool drawOnlyOnSelected = false;
 
     [Header("camera stats")]
-    public List<Vector2> camraPositions = new List<Vector2>(3);
-    public Vector2 lookAtPoint= new Vector2(.42f, 1.5f);
+    public List<Vector2> camraPositions = new(3);
+    public Vector2 lookAtPoint = new(.42f, 1.5f);
 
     [Header("car stats")]
     public driveMode driveMode = driveMode.allWheelDrive;
-    [Range(120, 2500)]
-    public int MaxPowerNM = 1200;  //  use NM as newton meters , thats how unity car collider works
+    [Range(120, 2500)] public int MaxPowerNM = 1200;  //  use NM as newton meters , thats how unity car collider works
+    [Tooltip("this will be used to add as a boost , this will only add power to the overall power of the car !")]
+    [Range(0, 1000)] public int boostPowerNM = 100;
     [Tooltip("lower = more steer")]
     [Range(2, 5)] public float MaxSteerAngle = 4;
     [Tooltip("less = steers quicker , not very controllable when too fast , suggested 14")]
-    [Range(1,20)] public float initialSteerDampSpeed = 1;
+    [Range(1, 20)] public float initialSteerDampSpeed = 1;
     [Tooltip("this will simply scale based on the car speed , slower turns at high speed !  , suggested 0.2f")]
     [Range(0, .5f)] public float steerDampMultiplier = 1.5f;
-    [HideInInspector]public float steerDampSpeed = 0;
-
+    [HideInInspector] public float steerDampSpeed = 0;
 
     [Header("gui")]
     [Range(0, .3f)] public float wireSphereRadius = .2f;
 
+    // holder variables
+    private Vector2 initialLookAtPoint;
 
-    // local variables
+    // temp variables
+    [Header("temp , for the cam lerping !")]
+    public float lerpVal = 0;
 
     [ContextMenu("Set Camera Position")]
     public void SetCameraPosition() {
@@ -48,10 +53,9 @@ public class CarStats : MonoBehaviour {
             Debug.LogError("Camera or target position not found!");
         }
     }
+    #endregion
 
-    //init valu
-    private Vector2 initialLookAtPoint;
-
+    #region main
     void Awake() {
         initialLookAtPoint = lookAtPoint;
     }
@@ -60,28 +64,18 @@ public class CarStats : MonoBehaviour {
         carStateMachine = GetComponent<CarStateMachine>();
     }
 
-    // temp variables
-    [Header("temp , for the cam lerping !")]
-    public float lerpVal = 0;
-
     void FixedUpdate() {
-        lookAtPoint = Vector2.Lerp(lookAtPoint , new Vector2(initialLookAtPoint.x , Mathf.Clamp(carStateMachine.KPH / 60, 0 , 1) +  initialLookAtPoint.y ), Time.deltaTime * lerpVal);
+        lookAtPoint = Vector2.Lerp(lookAtPoint, new Vector2(initialLookAtPoint.x, Mathf.Clamp(carStateMachine.KPH / 60, 0, 1) + initialLookAtPoint.y), Time.deltaTime * lerpVal);
 
     }
+    #endregion
 
+    #region Gizmos
+    private void OnDrawGizmosSelected() { if (drawOnlyOnSelected) GizmosLogic(); }
 
+    private void OnDrawGizmos() { if (!drawOnlyOnSelected) GizmosLogic(); }
 
-    // gizmos
-    private void OnDrawGizmosSelected() {
-        if (drawOnlyOnSelected) gizmosLogic();
-    }
-
-    private void OnDrawGizmos() {
-        if (!drawOnlyOnSelected) gizmosLogic();
-
-    }
-
-    void gizmosLogic() {
+    void GizmosLogic() {
         if (carStateMachine == null) {
             try {
                 carStateMachine = GetComponent<CarStateMachine>();
@@ -95,14 +89,10 @@ public class CarStats : MonoBehaviour {
         }
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.TransformPoint(new Vector3(0, lookAtPoint.y, lookAtPoint.x)), wireSphereRadius);
-
-
     }
-
+    #endregion
 
 }
-
-
 
 [System.Serializable]
 public enum driveMode {
