@@ -8,6 +8,8 @@ public class wheelsManager : MonoBehaviour {
 
     private WheelFrictionCurve forwardFriction, sidewaysFriction;
     //carController controller;
+    
+
     [Header("friction")]
     [Range(.8f, 1.8f)] public float tireGrip = 1;
     [Range(.5f, 3)] public float forwardValue = 1;

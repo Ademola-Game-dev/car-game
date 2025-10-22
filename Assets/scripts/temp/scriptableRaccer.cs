@@ -17,6 +17,12 @@ public class scriptableRaccer : MonoBehaviour {
     public float steerAffect = 0;
 
 
+    void Start() {
+        transform.position = track.nodes[0].position;
+        //currentnode = 0;
+    }
+
+
     void FixedUpdate() {
         if (track.nodes.Count == 0) return;
 
@@ -34,8 +40,8 @@ public class scriptableRaccer : MonoBehaviour {
 
         if (currentnode <= track.nodes.Count - 2) {
             //Vector3.Angle(A - B, C - B)
-            nextnodeangle = Vector3.Angle(transform.position - track.nodes[currentnode].position, track.nodes[currentnode + 1].position - track.nodes[currentnode ].position);
-            steerAffect = (Mathf.Clamp(Mathf.Abs(180 - nextnodeangle), 0, 180) / 180) * (Mathf.Clamp(cornerSpeedModifier,0 , speedModifier));
+            nextnodeangle = Vector3.Angle(transform.position - track.nodes[currentnode].position, track.nodes[currentnode + 1].position - track.nodes[currentnode].position);
+            steerAffect = (Mathf.Clamp(Mathf.Abs(180 - nextnodeangle), 0, 180) / 180) * (Mathf.Clamp(cornerSpeedModifier, 0, speedModifier));
         }
 
 

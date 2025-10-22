@@ -4024,9 +4024,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1459046814102071540, guid: cd6c083a627c8481988f31406be2fbd5, type: 3}
+      propertyPath: m_SuspensionDistance
+      value: 0.08
+      objectReference: {fileID: 0}
     - target: {fileID: 2527777697174761404, guid: cd6c083a627c8481988f31406be2fbd5, type: 3}
       propertyPath: m_Name
       value: 911 GT3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5802421983733821443, guid: cd6c083a627c8481988f31406be2fbd5, type: 3}
+      propertyPath: m_SuspensionDistance
+      value: 0.08
+      objectReference: {fileID: 0}
+    - target: {fileID: 7922727000271976808, guid: cd6c083a627c8481988f31406be2fbd5, type: 3}
+      propertyPath: m_SuspensionDistance
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 8829074084118549669, guid: cd6c083a627c8481988f31406be2fbd5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4067,6 +4079,10 @@ PrefabInstance:
     - target: {fileID: 8829074084118549669, guid: cd6c083a627c8481988f31406be2fbd5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9158840378746799012, guid: cd6c083a627c8481988f31406be2fbd5, type: 3}
+      propertyPath: m_SuspensionDistance
+      value: 0.08
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -30,6 +30,11 @@ public class CarStateMachine : MonoBehaviour {
     public float steerModifier = 0;
     #endregion
 
+    [Header("ui elements")]
+    public GameObject powerupsUiContainer;
+    public GameObject reusablePowerupsUiContainer;
+    public List<RectTransform> reusablePowerupsUiObjects;
+
     #region initializer
     void Start() => FindValues();
 
@@ -61,5 +66,6 @@ public enum PowerupType {
 [System.Serializable]
 public struct Powerup {
     public PowerupType type;
+    public bool isAvailable;
     public int index;
 }

@@ -1,9 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CarStats))]
 [RequireComponent(typeof(CarStateMachine))]
@@ -44,6 +44,8 @@ public class CarController : MonoBehaviour {
         trackwidth = Vector3.Distance(stateMachine.wheelTransforms[0].position, stateMachine.wheelTransforms[1].position);
 
         stateMachine.rigidbody.centerOfMass = centerOfMassTransform.localPosition;
+
+        InitializePowerupsUi();
     }
 
     void Update() {
@@ -51,8 +53,10 @@ public class CarController : MonoBehaviour {
 
         isSpacebarPressed = Input.GetKey(KeyCode.Space);
         isShiftPressed = Input.GetKey(KeyCode.LeftShift);
-        isEKeyPressed = Input.GetKeyUp(KeyCode.E);
-        isFKeyPressed = Input.GetKeyUp(KeyCode.F);
+
+        if (Input.GetKeyUp(KeyCode.E)) CyclePowerupIndex();
+        if (Input.GetKeyUp(KeyCode.F)) UsePowerUp();
+
         TranslatePwertoWheels();
 
     }
@@ -116,8 +120,8 @@ public class CarController : MonoBehaviour {
     // camera effects on shift press
     public void HandleEeffects() {
 
-        if (isEKeyPressed) CyclePowerupIndex();
-        if (isFKeyPressed) UsePowerUp();
+        //if (isEKeyPressed) CyclePowerupIndex();
+        //if (isFKeyPressed) UsePowerUp();
 
         if (isShiftPressed || usingNitrus) {
             stateMachine.boostNm = stats.boostPowerNM;
@@ -138,17 +142,24 @@ public class CarController : MonoBehaviour {
                 stateMachine.selectedPowerupIndex = 0;
             }
         }
+        UpdatePowerupsUi();
     }
 
     void UsePowerUp() {
-        //print("using powerup" + stateMachine.powerups[stateMachine.selectedPowerupIndex].type);
+        if (!stateMachine.powerups[stateMachine.selectedPowerupIndex].isAvailable) return;
+
         switch (stateMachine.powerups[stateMachine.selectedPowerupIndex].type) {
             case PowerupType.nitrus: UseNitrus(); break;
-            case PowerupType.rocket: UseNitrus(); break;
-
+            case PowerupType.rocket: UseRocket(); break;
+            case PowerupType.shield: UseShield(); break;
         }
-        stateMachine.powerups.RemoveAt(stateMachine.selectedPowerupIndex);
 
+        var _tmp = stateMachine.powerups[stateMachine.selectedPowerupIndex];
+        _tmp.isAvailable = false;
+        stateMachine.powerups[stateMachine.selectedPowerupIndex] = _tmp;
+
+        //stateMachine.powerups.RemoveAt(stateMachine.selectedPowerupIndex);
+        UpdatePowerupsUi();
     }
 
     // setters , for inputs
@@ -174,6 +185,10 @@ public class CarController : MonoBehaviour {
 
     private void UseRocket() {
         print("using rocket powerup");
+    }
+
+    private void UseShield() {
+        print("using shield powerup");
     }
 
     #endregion
@@ -212,6 +227,40 @@ public class CarController : MonoBehaviour {
     }
     #endregion
 
+    #region ui
+
+    public void InitializePowerupsUi() {
+        // this will just initialise the place holders for the ui components for the powerups nothings else .
+        // not using this count cur players will always have a set amount of powerupds to hold , 
+        //var PowerupTypeCount = Enum.GetNames(typeof(PowerupType)).Length;
+
+        float spaceBetween = 120;
+
+        for (int i = 0; i < 3; i++) {
+            GameObject newObj = Instantiate(stateMachine.reusablePowerupsUiContainer, stateMachine.powerupsUiContainer.transform);
+            RectTransform newRect = newObj.GetComponent<RectTransform>();
+            newRect.localPosition = new Vector3((i * spaceBetween) - spaceBetween, newRect.localPosition.y, newRect.localPosition.z);
+            stateMachine.reusablePowerupsUiObjects.Add(newRect);
+        }
+
+        UpdatePowerupsUi();
+    }
+
+    void UpdatePowerupsUi() {
+
+        for (int i = 0; i < stateMachine.reusablePowerupsUiObjects.Count; i++) {
+            stateMachine.reusablePowerupsUiObjects[i].GetComponent<Image>().color = new Color(255, 255, 255, i == stateMachine.selectedPowerupIndex ? 100 : 0);
+
+            // setting the states on the ui images !
+            stateMachine.reusablePowerupsUiObjects[i].GetChild(0).gameObject.SetActive(stateMachine.powerups[i].isAvailable && stateMachine.powerups[i].type == PowerupType.rocket);
+            stateMachine.reusablePowerupsUiObjects[i].GetChild(1).gameObject.SetActive(stateMachine.powerups[i].isAvailable && stateMachine.powerups[i].type == PowerupType.nitrus);
+            stateMachine.reusablePowerupsUiObjects[i].GetChild(2).gameObject.SetActive(stateMachine.powerups[i].isAvailable && stateMachine.powerups[i].type == PowerupType.shield);
+        }
+
+    }
+
+    #endregion
+
     #region gui
     [Header("gui")]
     public float GuiXPos = 0;
@@ -227,8 +276,6 @@ public class CarController : MonoBehaviour {
         //pos += GuiYSpace;
     }
     #endregion
-
-
 
 }
 
