@@ -24,6 +24,10 @@
 /[Aa]ssets/Plugins/Editor/JetBrains*
 /Assets/nfs
 /Assets/GameFiles
+/Assets/scripts/tmep
+/Assets/scripts/ModTools
+/Assets/scripts/WorldChunksStreamer
+/Assets/scripts/temp
 # Visual Studio cache directory
 .vs/
 
