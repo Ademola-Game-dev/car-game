@@ -1,44 +1,53 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
+[RequireComponent(typeof(CarStats))]
+[RequireComponent(typeof(CarController))]
+[RequireComponent(typeof(SteerManager))]
+[RequireComponent(typeof(Rigidbody))]
 public class CarStateMachine : MonoBehaviour {
 
     #region StateMachine
+    [HideInInspector] public CarStats CarStats;
 
     [Header("Car Parts")]
     public WheelCollider[] wheelColliders;
     public Transform[] wheelTransforms;
-    public Transform[] exhaustTransforms;
     public ParticleSystem[] nitrus;
-
-    public CarStats CarStats;
-    public new Rigidbody rigidbody;
+    [HideInInspector] public new Rigidbody rigidbody;
 
     //camera
-    public int cameraindexPos = 0;
+    [HideInInspector] public int cameraindexPos = 0;
 
     //car
     public float KPH = 0;
-    [Tooltip("this will add , not multiply to the overall power of the vehicle")]
-    public int boostNm = 0;
+    [HideInInspector] public int boostNm = 0; // this will add , not multiply to the overall power of the vehicle
 
     [Header("effects")]
     public int selectedPowerupIndex = 0;
     public List<Powerup> powerups;
 
-    // modifiers are used to modify car properties from helper scripts
-    public float steerModifier = 0;
-    #endregion
 
     [Header("ui elements")]
     public GameObject powerupsUiContainer;
     public GameObject reusablePowerupsUiContainer;
-    public List<RectTransform> reusablePowerupsUiObjects;
+    [HideInInspector] public List<RectTransform> reusablePowerupsUiObjects;
+
+    [Header("outside variables")]
+    [HideInInspector] public float overallSlip = 0;
+    [HideInInspector] public float overallSidewaysSlip = 0;
+    [HideInInspector] public float overallForwardSlip = 0;
+
+    [Header("inputs")]
+    [HideInInspector] public Vector2 moveInput;
+    #endregion
 
     #region initializer
     void Start() => FindValues();
 
     public void FindValues() {
+        rigidbody = GetComponent<Rigidbody>();
         foreach (Transform i in gameObject.transform) {
             if (i.transform.name == "carColliders") {
                 wheelColliders = new WheelCollider[i.transform.childCount];
@@ -56,6 +65,25 @@ public class CarStateMachine : MonoBehaviour {
     }
     #endregion
 
+    #region getters and setters
+    public bool AddPowerup(Powerup p) {
+        if (powerups.Count < 3) {
+            // this is using the select to basicly map thru the array , the hashset is just a collection of elemets unique . 
+            var existingIndices = powerups.Select(pu => pu.index).ToHashSet();
+            int nextIndex = 0;
+            while (existingIndices.Contains(nextIndex)) {
+                nextIndex++;
+            }
+            Powerup _powerUp = p;
+            _powerUp.index = nextIndex;
+            powerups.Add(_powerUp);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    #endregion
+
 }
 
 [System.Serializable]
@@ -66,6 +94,5 @@ public enum PowerupType {
 [System.Serializable]
 public struct Powerup {
     public PowerupType type;
-    public bool isAvailable;
     public int index;
 }

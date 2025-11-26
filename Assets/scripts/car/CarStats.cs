@@ -19,15 +19,14 @@ public class CarStats : MonoBehaviour {
     [Range(120, 2500)] public int MaxPowerNM = 1200;  //  use NM as newton meters , thats how unity car collider works
     [Tooltip("this will be used to add as a boost , this will only add power to the overall power of the car !")]
     [Range(0, 1000)] public int boostPowerNM = 100;
-    [Tooltip("lower = more steer")]
-    [Range(2, 5)] public float MaxSteerAngle = 4;
-    [Tooltip("less = steers quicker , not very controllable when too fast , suggested 14")]
-    [Range(1, 20)] public float initialSteerDampSpeed = 1;
-    [Tooltip("this will simply scale based on the car speed , slower turns at high speed !  , suggested 0.2f")]
-    [Range(0, .5f)] public float steerDampMultiplier = 1.5f;
-    [HideInInspector] public float steerDampSpeed = 0;
 
-    [Header("gui")]
+    [Header("forces")]
+    public AnimationCurve downforceCurve;
+    [Tooltip("this will increase the sideways velocity while on high speed , more stability when turning!")]
+    [Range(0, 0.003f)] public float angularVelocityMultiplier = 0.0002f;
+    [Range(0, 0.001f)] public float linearVelocityMultiplier = 0.0002f;
+
+    [Header("Gizmos")]
     [Range(0, .3f)] public float wireSphereRadius = .2f;
 
     // holder variables

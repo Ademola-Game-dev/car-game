@@ -1,45 +1,30 @@
 using System;
+using System.Linq;
+using Unity.Mathematics;
 using UnityEngine;
 
-//[RequireComponent(typeof(carController))]
+[RequireComponent(typeof(CarStateMachine))]
 public class wheelsManager : MonoBehaviour {
 
     private CarStateMachine stateMachine;
 
     private WheelFrictionCurve forwardFriction, sidewaysFriction;
     //carController controller;
-    
 
-    [Header("friction")]
-    [Range(.8f, 1.8f)] public float tireGrip = 1;
-    [Range(.5f, 3)] public float forwardValue = 1;
-    [Range(.5f, 3)] public float sidewaysValue = 2;
-    [Range(.2f, 1f)] public float clampMinSlip = .35f;
-
-
-
-    [Header("steering")]
-    [Tooltip("more = less steer at high speed !")]
-    [Range(0, 0.5f)] public float steeringRadiusModifier;
-    [Tooltip("this will simplty multiply the steeringRadiusModifier by this value , steeper curve ")]
-    [Range(0, 2)] public float steeringRadiusMultiplier = 1.1f;
-    [Tooltip("this will add counter steer mod , making it possible to hold the drift and also be able to correct the steer ! , prefered to be set about 10-15 , lowe = less mod = harder to hold the drift")]
-    [Range(0, 20)] public float slipSteerRadiusMultiplier = 1;
+    [Header("curve friction")]
+    public AnimationCurve slipFrictionCurve;
 
     private float[] forwardSlip;
     private float[] sidewaysSlip;
     private float[] overallSlip;
     private float[] newStiffnessForward;
     private float[] newStiffnessSideways;
-    private float sidewaysSplipSim = 0;
-    private float smoothedSidewaysSplipSim;
 
-    [Header("visualizers")]
-    private float modifiedRadius;
-    private float slipRadiusModifier = 1;
+    // animationg the wheels , 
 
-    [Header("debug")]
-    private float sidewaysSplipSimLerpSpeed = 1;
+    private Vector3 wheelPosition;
+    private Quaternion wheelRotation;
+
 
     void Start() {
         stateMachine = GetComponent<CarStateMachine>();
@@ -79,34 +64,51 @@ public class wheelsManager : MonoBehaviour {
 
     void ManageFriction() {
 
-        sidewaysSplipSim = 0;
-        WheelHit hit;
+        //sidewaysSplipSim = 0;
         for (int i = 0; i < stateMachine.wheelColliders.Length; i++) {
-            if (stateMachine.wheelColliders[i].GetGroundHit(out hit)) {
-                overallSlip[i] = (Mathf.Abs(hit.forwardSlip) + Mathf.Abs(hit.sidewaysSlip));
+            if (stateMachine.wheelColliders[i].GetGroundHit(out WheelHit hit)) {
+
+                forwardSlip[i] = Mathf.Abs(hit.forwardSlip);
+                sidewaysSlip[i] = Mathf.Abs(hit.sidewaysSlip);
+
+                overallSlip[i] = Mathf.Abs(hit.forwardSlip) + Mathf.Abs(hit.sidewaysSlip);
 
                 forwardFriction = stateMachine.wheelColliders[i].forwardFriction;
-                newStiffnessForward[i] = Mathf.Clamp(tireGrip - (overallSlip[i] / 2) / forwardValue, clampMinSlip, 2);
+                newStiffnessForward[i] = slipFrictionCurve.Evaluate(overallSlip[i]);
                 forwardFriction.stiffness = newStiffnessForward[i];
                 stateMachine.wheelColliders[i].forwardFriction = forwardFriction;
 
                 sidewaysFriction = stateMachine.wheelColliders[i].sidewaysFriction;
-                newStiffnessSideways[i] = Mathf.Clamp(tireGrip - (overallSlip[i] / 2) / sidewaysValue, clampMinSlip, 2);
+                newStiffnessSideways[i] = slipFrictionCurve.Evaluate(overallSlip[i]);
                 sidewaysFriction.stiffness = newStiffnessSideways[i];
                 stateMachine.wheelColliders[i].sidewaysFriction = sidewaysFriction;
 
-                forwardSlip[i] = hit.forwardSlip;
-                sidewaysSlip[i] = hit.sidewaysSlip;
-                if (i > 1) sidewaysSplipSim += Mathf.Abs(hit.sidewaysSlip); // getting the slip only for the rear wheels , when sideways sliping !
+                //sidewaysSplipSim += Mathf.Abs(hit.sidewaysSlip); // getting the slip only for the rear wheels , when sideways sliping !
+
+                //if (i > 1) sidewaysSplipSim += Mathf.Abs(hit.sidewaysSlip); // getting the slip only for the rear wheels , when sideways sliping !
             }
+
+            // adding rotation to the wheels 3d objects !
+            stateMachine.wheelColliders[i].GetWorldPose(out wheelPosition, out wheelRotation);
+            stateMachine.wheelTransforms[i].transform.localRotation = Quaternion.Euler(0, stateMachine.wheelColliders[i].steerAngle, 0);                                    //steer rotation
+            if (i % 2 != 0) {
+                stateMachine.wheelTransforms[i].transform.GetChild(0).transform.Rotate(stateMachine.wheelColliders[i].rpm * -6.6f * Time.deltaTime, 0, 0, Space.Self);      //engine rotation
+            } else {
+                stateMachine.wheelTransforms[i].transform.GetChild(0).transform.Rotate(stateMachine.wheelColliders[i].rpm * 6.6f * Time.deltaTime, 0, 0, Space.Self);       //engine rotation
+            }
+            stateMachine.wheelTransforms[i].transform.position = wheelPosition;
+
         }
 
-        smoothedSidewaysSplipSim = Mathf.Lerp(smoothedSidewaysSplipSim, sidewaysSplipSim, Time.deltaTime * 2);
-        slipRadiusModifier = Mathf.Clamp(Mathf.Abs(smoothedSidewaysSplipSim) * slipSteerRadiusMultiplier, 0, modifiedRadius - stateMachine.CarStats.MaxSteerAngle);
-        modifiedRadius = Mathf.Lerp(modifiedRadius, stateMachine.KPH * (steeringRadiusModifier * steeringRadiusMultiplier), Time.deltaTime * 2);
+        stateMachine.overallSlip = overallSlip.Sum() / stateMachine.wheelColliders.Count();
+        stateMachine.overallSidewaysSlip = sidewaysSlip.Sum() / stateMachine.wheelColliders.Count();
+        stateMachine.overallForwardSlip = forwardSlip.Sum() / stateMachine.wheelColliders.Count();
 
-        stateMachine.steerModifier = modifiedRadius - slipRadiusModifier;
-        stateMachine.CarStats.steerDampSpeed = stateMachine.CarStats.initialSteerDampSpeed + (stateMachine.KPH * stateMachine.CarStats.steerDampMultiplier);
+        //smoothedSidewaysSplipSim = Mathf.Lerp(smoothedSidewaysSplipSim, sidewaysSplipSim, Time.deltaTime * 4);
+        //slipRadiusModifier = Mathf.Clamp(Mathf.Abs(smoothedSidewaysSplipSim) * slipSteerRadiusMultiplier, 0, modifiedRadius - stateMachine.CarStats.MaxSteerAngle);
+        //modifiedRadius = Mathf.Lerp(modifiedRadius, stateMachine.KPH * (steeringRadiusModifier * steeringRadiusMultiplier), Time.deltaTime * 2);
+
+        //stateMachine.steerModifier = modifiedRadius - slipRadiusModifier;
 
     }
 
@@ -116,6 +118,7 @@ public class wheelsManager : MonoBehaviour {
     public float GuiXPos = 0;
     public float GuiYPos = 0;
     public float GuiYSpace = 1;
+    public GUIStyle customStyle = new();
     public float GuiCellWidth = 200;
     public float GuiCellHeight = 20;
 
@@ -124,35 +127,33 @@ public class wheelsManager : MonoBehaviour {
 
         // forwardSlip
         string forwardSlipString = "";
-        foreach (float slipValue in forwardSlip) forwardSlipString += slipValue.ToString("0.0") + " ";
-        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), forwardSlipString.TrimEnd() + " forward");
-        pos += GuiYSpace;
-
-        // sidewaysSlip
-        string sidewaysSlipString = "";
-        foreach (float slipValue in sidewaysSlip) sidewaysSlipString += slipValue.ToString("0.0") + " ";
-        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), sidewaysSlipString.TrimEnd() + " sideways");
-        pos += GuiYSpace;
-
-        // overallSlip
-        string overallSlipString = "";
-        foreach (float slipValue in overallSlip) overallSlipString += slipValue.ToString("0.0") + " ";
-        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), overallSlipString.TrimEnd() + " slip");
+        foreach (float slipValue in forwardSlip) forwardSlipString += Mathf.Abs(slipValue).ToString("0.0") + " ";
+        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), forwardSlipString.TrimEnd() + " forward", customStyle);
         pos += GuiYSpace;
 
         // newStiffnessForward
         string stiffnessForwardString = "";
-        foreach (float slipValue in newStiffnessForward) stiffnessForwardString += slipValue.ToString("0.0") + " ";
-        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), stiffnessForwardString.TrimEnd() + " stiffnes Forward");
+        foreach (float slipValue in newStiffnessForward) stiffnessForwardString += Mathf.Abs(slipValue).ToString("0.0") + " ";
+        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), stiffnessForwardString.TrimEnd() + " stiffnes Forward", customStyle);
+        pos += GuiYSpace;
+
+        // sidewaysSlip
+        string sidewaysSlipString = "";
+        foreach (float slipValue in sidewaysSlip) sidewaysSlipString += Mathf.Abs(slipValue).ToString("0.0") + " ";
+        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), sidewaysSlipString.TrimEnd() + " sideways", customStyle);
         pos += GuiYSpace;
 
         // newStiffnessSideways
         string stiffnessSidewaysString = "";
-        foreach (float slipValue in newStiffnessSideways) stiffnessSidewaysString += slipValue.ToString("0.0") + " ";
-        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), stiffnessSidewaysString.TrimEnd() + " stiffnes Sideways");
+        foreach (float slipValue in newStiffnessSideways) stiffnessSidewaysString += Mathf.Abs(slipValue).ToString("0.0") + " ";
+        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), stiffnessSidewaysString.TrimEnd() + " stiffnes Sideways", customStyle);
         pos += GuiYSpace; // No increment needed after the last item
 
-        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), sidewaysSplipSim + " sum of slip");
+        // overallSlip
+        string overallSlipString = "";
+        foreach (float slipValue in overallSlip) overallSlipString += Mathf.Abs(slipValue).ToString("0.0") + " ";
+        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), overallSlipString.TrimEnd() + " slip", customStyle);
+        pos += GuiYSpace;
 
 
 

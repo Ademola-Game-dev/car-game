@@ -751,10 +751,10 @@ GameObject:
   - component: {fileID: 3315764718080443496}
   - component: {fileID: 1210918925168689361}
   - component: {fileID: 8321410287530166930}
-  - component: {fileID: 4235672105655763478}
   - component: {fileID: 415534914011417661}
   - component: {fileID: 456288903237699257}
   - component: {fileID: 7457808278114401531}
+  - component: {fileID: 1921350773079616984}
   m_Layer: 0
   m_Name: 911 GT3
   m_TagString: Player
@@ -856,6 +856,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a41ee442ba64c75ab9bb30669e192d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CarStats: {fileID: 456288903237699257}
   wheelColliders:
   - {fileID: 9158840378746799012}
   - {fileID: 1459046814102071540}
@@ -866,11 +867,9 @@ MonoBehaviour:
   - {fileID: 2603260393620417676}
   - {fileID: 824092571694618004}
   - {fileID: 1687433780929621488}
-  exhaustTransforms: []
   nitrus:
   - {fileID: 2408903619808614934}
   - {fileID: 4636355371019522616}
-  CarStats: {fileID: 456288903237699257}
   rigidbody: {fileID: 3315764718080443496}
   cameraindexPos: 1
   KPH: 0
@@ -878,18 +877,18 @@ MonoBehaviour:
   selectedPowerupIndex: 0
   powerups:
   - type: 0
-    isAvailable: 1
     index: 0
   - type: 2
-    isAvailable: 1
     index: 0
   - type: 1
-    isAvailable: 1
     index: 0
-  steerModifier: 0
   powerupsUiContainer: {fileID: 6399994115873976136}
   reusablePowerupsUiContainer: {fileID: 4901473035779741770, guid: 5a2611b932b774cbf91f97f0d379f12d, type: 3}
   reusablePowerupsUiObjects: []
+  overallSlip: 0
+  overallSidewaysSlip: 0
+  overallForwardSlip: 0
+  moveInput: {x: 0, y: 0}
 --- !u!114 &8321410287530166930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -911,20 +910,75 @@ MonoBehaviour:
   GuiXPos: 0
   GuiYPos: 0
   GuiYSpace: 1
+  customStyle:
+    m_Name: 
+    m_Normal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Hover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Active:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Focused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnNormal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnHover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnActive:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnFocused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Border:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Margin:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Padding:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Overflow:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Font: {fileID: 0}
+    m_FontSize: 0
+    m_FontStyle: 0
+    m_Alignment: 0
+    m_WordWrap: 0
+    m_RichText: 1
+    m_TextClipping: 0
+    m_ImagePosition: 0
+    m_ContentOffset: {x: 0, y: 0}
+    m_FixedWidth: 0
+    m_FixedHeight: 0
+    m_StretchWidth: 1
+    m_StretchHeight: 0
   GuiCellWidth: 200
   GuiCellHeight: 20
---- !u!114 &4235672105655763478
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2527777697174761404}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a706ba418d349438ba9aa836e826f2db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &415534914011417661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -937,16 +991,82 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 407a5aabfce9647c3aac5c9619206343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tireGrip: 1.248
-  forwardValue: 1.61
-  sidewaysValue: 0.82
-  clampMinSlip: 0.447
-  steeringRadiusModifier: 0.146
-  steeringRadiusMultiplier: 0.87
-  slipSteerRadiusMultiplier: 19.9
+  slipFrictionCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   GuiXPos: 3
   GuiYPos: 2
   GuiYSpace: 11
+  customStyle:
+    m_Name: 
+    m_Normal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Hover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Active:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Focused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnNormal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnHover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnActive:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnFocused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Border:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Margin:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Padding:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Overflow:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Font: {fileID: 0}
+    m_FontSize: 0
+    m_FontStyle: 0
+    m_Alignment: 0
+    m_WordWrap: 0
+    m_RichText: 1
+    m_TextClipping: 0
+    m_ImagePosition: 0
+    m_ContentOffset: {x: 0, y: 0}
+    m_FixedWidth: 0
+    m_FixedHeight: 0
+    m_StretchWidth: 1
+    m_StretchHeight: 0
   GuiCellWidth: 200
   GuiCellHeight: 20
 --- !u!114 &456288903237699257
@@ -961,7 +1081,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ef7f255308f24e539d47a73feacd063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carStateMachine: {fileID: 0}
+  carStateMachine: {fileID: 1210918925168689361}
   drawOnlyOnSelected: 1
   camraPositions:
   - {x: -3.67, y: 1.65}
@@ -971,10 +1091,14 @@ MonoBehaviour:
   driveMode: 2
   MaxPowerNM: 771
   boostPowerNM: 541
-  MaxSteerAngle: 2.528
-  initialSteerDampSpeed: 10.72
-  steerDampMultiplier: 0.156
-  steerDampSpeed: 0
+  downforceCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  angularVelocityMultiplier: 0.0002
+  linearVelocityMultiplier: 0.0002
   wireSphereRadius: 0.267
   lerpVal: 2.37
 --- !u!114 &7457808278114401531
@@ -984,12 +1108,34 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2527777697174761404}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9db93a7b7039b4be18f94c03d4cd529f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   intensity: 5000
+--- !u!114 &1921350773079616984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2527777697174761404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec8890f917f94429b9d215b1c229e2a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSteerAngle: 4
+  steeringRadiusModifier: 0
+  slipSteerRadiusMultiplier: 1
+  initialSteerDampSpeed: 1
+  steerDampMultiplier: 0.5
+  modifiedRadius: 0
+  slipRadiusModifier: 1
+  smoothedSidewaysSplipSim: 0
+  steerDampSpeed: 0
+  steerModifier: 0
 --- !u!1 &2535619849906387967
 GameObject:
   m_ObjectHideFlags: 0

@@ -6313,17 +6313,18 @@ GameObject:
   - component: {fileID: 6651324969678163564}
   - component: {fileID: 7239004036011205608}
   - component: {fileID: 3492436177848082815}
-  - component: {fileID: 7000736315821976889}
   - component: {fileID: 8882697039452683179}
   - component: {fileID: 5684482186455399854}
   - component: {fileID: 1822017453318196057}
+  - component: {fileID: 2311785612754174857}
+  - component: {fileID: 3156693733440377432}
   m_Layer: 0
   m_Name: Ferrari testarosa PREFAB
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &933538586035940014
 Transform:
   m_ObjectHideFlags: 0
@@ -6345,6 +6346,7 @@ Transform:
   - {fileID: 5446291331053564694}
   - {fileID: 5308353817434665356}
   - {fileID: 2532350543986659543}
+  - {fileID: 3231946419324688888}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &7826095647724001694
@@ -6416,6 +6418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8a41ee442ba64c75ab9bb30669e192d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CarStats: {fileID: 5684482186455399854}
   wheelColliders:
   - {fileID: 2891444774351147212}
   - {fileID: 4154328548908322317}
@@ -6426,32 +6429,22 @@ MonoBehaviour:
   - {fileID: 5143881572335397481}
   - {fileID: 1122467758661151210}
   - {fileID: 7169212261911590221}
-  exhaustTransforms:
-  - {fileID: 5446291331053564694}
-  - {fileID: 5308353817434665356}
   nitrus:
   - {fileID: 1336441286420134001}
   - {fileID: 5692459928572384569}
-  CarStats: {fileID: 5684482186455399854}
   rigidbody: {fileID: 7826095647724001694}
   cameraindexPos: 1
   KPH: 0.000001852238
   boostNm: 0
   selectedPowerupIndex: 1
-  powerups:
-  - type: 0
-    isAvailable: 1
-    index: 9
-  - type: 2
-    isAvailable: 1
-    index: 9
-  - type: 1
-    isAvailable: 1
-    index: 9
-  steerModifier: 0
+  powerups: []
   powerupsUiContainer: {fileID: 9095161094912255537}
   reusablePowerupsUiContainer: {fileID: 4901473035779741770, guid: 5a2611b932b774cbf91f97f0d379f12d, type: 3}
   reusablePowerupsUiObjects: []
+  overallSlip: 0
+  overallSidewaysSlip: 0
+  overallForwardSlip: 0
+  moveInput: {x: 0, y: 0}
 --- !u!114 &3492436177848082815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6473,20 +6466,75 @@ MonoBehaviour:
   GuiXPos: 5
   GuiYPos: 80
   GuiYSpace: 13.61
+  customStyle:
+    m_Name: 
+    m_Normal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Hover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Active:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Focused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnNormal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnHover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnActive:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnFocused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Border:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Margin:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Padding:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Overflow:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Font: {fileID: 0}
+    m_FontSize: 0
+    m_FontStyle: 0
+    m_Alignment: 0
+    m_WordWrap: 0
+    m_RichText: 1
+    m_TextClipping: 0
+    m_ImagePosition: 0
+    m_ContentOffset: {x: 0, y: 0}
+    m_FixedWidth: 0
+    m_FixedHeight: 0
+    m_StretchWidth: 1
+    m_StretchHeight: 0
   GuiCellWidth: 62.3
   GuiCellHeight: 20
---- !u!114 &7000736315821976889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3396831504517664365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a706ba418d349438ba9aa836e826f2db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8882697039452683179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6499,16 +6547,118 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 407a5aabfce9647c3aac5c9619206343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tireGrip: 1.248
-  forwardValue: 1.61
-  sidewaysValue: 0.82
-  clampMinSlip: 0.447
-  steeringRadiusModifier: 0.146
-  steeringRadiusMultiplier: 0.87
-  slipSteerRadiusMultiplier: 19.9
+  slipFrictionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1.3158934
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.66488934
+      value: 1.356099
+      inSlope: -0.14371178
+      outSlope: -0.14371178
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.08478587
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0755571
+      value: 0.6239783
+      inSlope: -0.036987163
+      outSlope: -0.036987163
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.56142235
+      outWeight: 0.08247081
+    - serializedVersion: 3
+      time: 2.6259384
+      value: 0.7741437
+      inSlope: 0.00013234385
+      outSlope: 0.00013234385
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.05863957
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   GuiXPos: 3
   GuiYPos: 2
   GuiYSpace: 11
+  customStyle:
+    m_Name: 
+    m_Normal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Hover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Active:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Focused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnNormal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnHover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnActive:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnFocused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Border:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Margin:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Padding:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Overflow:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Font: {fileID: 0}
+    m_FontSize: 0
+    m_FontStyle: 0
+    m_Alignment: 0
+    m_WordWrap: 0
+    m_RichText: 1
+    m_TextClipping: 0
+    m_ImagePosition: 0
+    m_ContentOffset: {x: 0, y: 0}
+    m_FixedWidth: 0
+    m_FixedHeight: 0
+    m_StretchWidth: 1
+    m_StretchHeight: 0
   GuiCellWidth: 200
   GuiCellHeight: 20
 --- !u!114 &5684482186455399854
@@ -6530,13 +6680,62 @@ MonoBehaviour:
   - {x: -4.46, y: 2.24}
   - {x: -6.28, y: 3.09}
   lookAtPoint: {x: 0.42, y: 1.4}
-  driveMode: 2
-  MaxPowerNM: 771
-  boostPowerNM: 541
-  MaxSteerAngle: 2.528
-  initialSteerDampSpeed: 10.72
-  steerDampMultiplier: 0.156
-  steerDampSpeed: 0
+  driveMode: 1
+  MaxPowerNM: 661
+  boostPowerNM: 419
+  downforceCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 4.1293564
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 240.03484
+      value: 53.944885
+      inSlope: 0.14393483
+      outSlope: 0.14393483
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 559.00836
+      value: 84.59013
+      inSlope: 0.077468224
+      outSlope: 0.077468224
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 782.0469
+      value: 95.93359
+      inSlope: 0.12611534
+      outSlope: 0.12611534
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.089624114
+      outWeight: 0.18309125
+    - serializedVersion: 3
+      time: 1139.8513
+      value: 109.87141
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  angularVelocityMultiplier: 0.00165
+  linearVelocityMultiplier: 0.000165
   wireSphereRadius: 0.267
   lerpVal: 2.37
 --- !u!114 &1822017453318196057
@@ -6546,12 +6745,172 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3396831504517664365}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9db93a7b7039b4be18f94c03d4cd529f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  intensity: 733
+  intensity: 3120
+--- !u!114 &2311785612754174857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3396831504517664365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec8890f917f94429b9d215b1c229e2a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxSteerAngle: 3.04
+  steeringRadiusModifier: 0.066
+  slipSteerRadiusMultiplier: 1.76
+  initialSteerDampSpeed: 11.9
+  steerDampMultiplier: 0.5
+  modifiedRadius: 0
+  slipRadiusModifier: 1
+  smoothedSidewaysSplipSim: 0
+  steerDampSpeed: 0
+  steerModifier: 0
+--- !u!114 &3156693733440377432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3396831504517664365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8544c8f5c4d8c4404b1917c9cd275b69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  handBrakeFrictionMultiplier: 2
+  minRPM: 600
+  maxRPM: 9000
+  engineLerp: 0.995
+  finalDrive: 3.6
+  gears:
+  - 0
+  - 6.19
+  - 5.17
+  - 4.08
+  - 3.34
+  - 2.95
+  - 2.46
+  - 2.11
+  - 1.97
+  enginePower:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 400
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 8943.558
+      value: 800
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 9186.333
+      value: 119.99954
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  gearNum: 0
+  reverse: 0
+  engineRPM: 1001.76056
+  brakePower: 100
+  brakeLerpSpeed: 4
+  handBrakePower: 100
+  GuiXPos: 8.4
+  GuiYPos: 91.59
+  GuiYSpace: 19.9
+  customStyle:
+    m_Name: 
+    m_Normal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Hover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Active:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Focused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnNormal:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnHover:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnActive:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_OnFocused:
+      m_Background: {fileID: 0}
+      m_ScaledBackgrounds: []
+      m_TextColor: {r: 0, g: 0, b: 0, a: 1}
+    m_Border:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Margin:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Padding:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Overflow:
+      m_Left: 0
+      m_Right: 0
+      m_Top: 0
+      m_Bottom: 0
+    m_Font: {fileID: 0}
+    m_FontSize: 0
+    m_FontStyle: 0
+    m_Alignment: 0
+    m_WordWrap: 0
+    m_RichText: 1
+    m_TextClipping: 0
+    m_ImagePosition: 0
+    m_ContentOffset: {x: 0, y: 0}
+    m_FixedWidth: 0
+    m_FixedHeight: 0
+    m_StretchWidth: 1
+    m_StretchHeight: 0
+  GuiCellWidth: 200
+  GuiCellHeight: 20
 --- !u!1 &3425628163567839553
 GameObject:
   m_ObjectHideFlags: 0
@@ -6773,7 +7132,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3231946419324688888}
   - {fileID: 335776374720744823}
   m_Father: {fileID: 933538586035940014}
   m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
@@ -11950,21 +12308,21 @@ ReflectionProbe:
   serializedVersion: 2
   m_Type: 0
   m_Mode: 1
-  m_RefreshMode: 0
+  m_RefreshMode: 1
   m_TimeSlicingMode: 0
-  m_Resolution: 128
+  m_Resolution: 64
   m_UpdateFrequency: 0
-  m_BoxSize: {x: 5, y: 2, z: 5}
+  m_BoxSize: {x: 5, y: 3.91, z: 5}
   m_BoxOffset: {x: 0, y: 0, z: 0}
   m_NearClip: 0.3
   m_FarClip: 1000
-  m_ShadowDistance: 100
+  m_ShadowDistance: 0
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IntensityMultiplier: 1
+  m_IntensityMultiplier: 1.4
   m_BlendDistance: 1
   m_HDR: 1
   m_BoxProjection: 0
@@ -13434,12 +13792,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8596970394545062191}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 77.019, y: 77.019, z: 77.019}
+  m_LocalRotation: {x: -0.00000018966081, y: -0.7071067, z: -0.7071068, w: 0.00000018966078}
+  m_LocalPosition: {x: 0, y: 0.5279999, z: 0}
+  m_LocalScale: {x: 77.019, y: 77.01899, z: 77.01899}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 65428863282097523}
+  m_Father: {fileID: 933538586035940014}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &1379489358359196913
 MeshFilter:

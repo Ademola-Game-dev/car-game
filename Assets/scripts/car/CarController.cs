@@ -1,17 +1,15 @@
 using System;
 using System.Threading.Tasks;
-using Unity.VisualScripting;
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(CarStats))]
 [RequireComponent(typeof(CarStateMachine))]
 public class CarController : MonoBehaviour {
 
     #region variables , inspector
     private CarStateMachine stateMachine;
-    private CarStats stats;
 
     public Transform centerOfMassTransform;
 
@@ -21,30 +19,18 @@ public class CarController : MonoBehaviour {
     public int inistalFow = 80;
     public bool drawOnlyOnSelected = false;
 
+
     //private
-    private float wheelbase = 2.5f, trackwidth = 1.5f;
-    private Vector2 moveInput;
-    private Vector2 lerpedmoveInput;
-    private Vector2 Velocity = new(0, 0);
+
     private bool isSpacebarPressed;
     private bool isShiftPressed;
-    private bool isEKeyPressed = false;
-    private bool isFKeyPressed = false;
-    // powerup variables
     private bool usingNitrus = false;
-    //public KeyCode E;
     #endregion
 
     #region main
     void Start() {
         stateMachine = GetComponent<CarStateMachine>();
-        stats = GetComponent<CarStats>();
-
-        wheelbase = Vector3.Distance(stateMachine.wheelTransforms[0].position, stateMachine.wheelTransforms[2].position);
-        trackwidth = Vector3.Distance(stateMachine.wheelTransforms[0].position, stateMachine.wheelTransforms[1].position);
-
         stateMachine.rigidbody.centerOfMass = centerOfMassTransform.localPosition;
-
         InitializePowerupsUi();
     }
 
@@ -62,69 +48,53 @@ public class CarController : MonoBehaviour {
     }
 
     void FixedUpdate() {
-
-        HandleSteering();
         HandleEeffects();
-
         stateMachine.KPH = stateMachine.rigidbody.linearVelocity.magnitude * 3.6f;
-
     }
 
     public void TranslatePwertoWheels() {
-
-        switch (stats.driveMode) {
+        return;
+        switch (stateMachine.CarStats.driveMode) {
             case driveMode.frontWheelDrive:
-                stateMachine.wheelColliders[0].motorTorque = moveInput.y * (stats.MaxPowerNM + stateMachine.boostNm);
-                stateMachine.wheelColliders[1].motorTorque = moveInput.y * (stats.MaxPowerNM + stateMachine.boostNm);
+                stateMachine.wheelColliders[0].motorTorque = stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
+                stateMachine.wheelColliders[1].motorTorque = stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
                 break;
             case driveMode.rearWheelDrive:
-                stateMachine.wheelColliders[2].motorTorque = isSpacebarPressed ? 0 : moveInput.y * (stats.MaxPowerNM + stateMachine.boostNm);
-                stateMachine.wheelColliders[3].motorTorque = isSpacebarPressed ? 0 : moveInput.y * (stats.MaxPowerNM + stateMachine.boostNm);
+                stateMachine.wheelColliders[2].motorTorque = isSpacebarPressed ? 0 : stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
+                stateMachine.wheelColliders[3].motorTorque = isSpacebarPressed ? 0 : stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
                 break;
             case driveMode.allWheelDrive:
                 for (int i = 0; i < stateMachine.wheelColliders.Length; i++) {
                     if (i > 1) {
-                        // rear wheel
-                        stateMachine.wheelColliders[i].motorTorque = isSpacebarPressed ? 0 : moveInput.y * (stats.MaxPowerNM + stateMachine.boostNm);
-                        //wheels[i].collider.brakeTorque = !isSpacebarPressed ? 0 : 1000;
+                        stateMachine.wheelColliders[i].motorTorque = isSpacebarPressed ? 0 : stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
                     } else {
-                        stateMachine.wheelColliders[i].motorTorque = moveInput.y * (stats.MaxPowerNM + stateMachine.boostNm);
-
-                        //fron wheels for now
+                        stateMachine.wheelColliders[i].motorTorque = stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
                     }
+                    stateMachine.wheelColliders[i].brakeTorque = stateMachine.moveInput.y < 0.0 ? Mathf.Abs(stateMachine.moveInput.y) * 100000 : 0;
                 }
                 break;
         }
 
-        stateMachine.wheelColliders[2].brakeTorque = !isSpacebarPressed ? 0 : 1000;
-        stateMachine.wheelColliders[3].brakeTorque = !isSpacebarPressed ? 0 : 1000;
+        stateMachine.wheelColliders[2].brakeTorque = !isSpacebarPressed ? 0 : 200000;
+        stateMachine.wheelColliders[3].brakeTorque = !isSpacebarPressed ? 0 : 200000;
+
+        //this is world axis
+        //stateMachine.rigidbody.AddForce(transform.up * (downforceMultiplier * stateMachine.KPH));
+
+        //this should be local axis
+        stateMachine.rigidbody.AddForce(-stateMachine.rigidbody.transform.up * stateMachine.CarStats.downforceCurve.Evaluate(stateMachine.KPH), ForceMode.Force);
+        stateMachine.rigidbody.angularDamping = Mathf.Lerp(stateMachine.rigidbody.angularDamping, stateMachine.KPH * stateMachine.CarStats.angularVelocityMultiplier, Time.deltaTime * 3);
+        stateMachine.rigidbody.linearDamping = Mathf.Lerp(stateMachine.rigidbody.linearDamping, stateMachine.KPH * stateMachine.CarStats.linearVelocityMultiplier, Time.deltaTime * 3);
 
     }
 
-    void HandleSteering() {
-        //concventional input forwading to the wheel turn logic !
-        lerpedmoveInput = Vector2.SmoothDamp(lerpedmoveInput, moveInput, ref Velocity, Time.deltaTime * stats.steerDampSpeed);
-        if (lerpedmoveInput.x > 0) {
-            stateMachine.wheelColliders[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / ((stats.MaxSteerAngle + stateMachine.steerModifier) + (trackwidth / 2))) * lerpedmoveInput.x;
-            stateMachine.wheelColliders[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / ((stats.MaxSteerAngle + stateMachine.steerModifier) - (trackwidth / 2))) * lerpedmoveInput.x;
-        } else if (lerpedmoveInput.x < 0) {
-            stateMachine.wheelColliders[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / ((stats.MaxSteerAngle + stateMachine.steerModifier) - (trackwidth / 2))) * lerpedmoveInput.x;
-            stateMachine.wheelColliders[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / ((stats.MaxSteerAngle + stateMachine.steerModifier) + (trackwidth / 2))) * lerpedmoveInput.x;
-        } else {
-            stateMachine.wheelColliders[0].steerAngle = 0;
-            stateMachine.wheelColliders[1].steerAngle = 0;
-        }
-
-    }
 
     // camera effects on shift press
     public void HandleEeffects() {
-
-        //if (isEKeyPressed) CyclePowerupIndex();
-        //if (isFKeyPressed) UsePowerUp();
+        if (Camera.main == null) return;
 
         if (isShiftPressed || usingNitrus) {
-            stateMachine.boostNm = stats.boostPowerNM;
+            stateMachine.boostNm = stateMachine.CarStats.boostPowerNM;
             Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, inistalFow + fowDisplaceAmount, fowDisplaceLerpSpeed * Time.deltaTime);
             SetExhaust(true);
         } else {
@@ -135,51 +105,43 @@ public class CarController : MonoBehaviour {
     }
 
     void CyclePowerupIndex() {
-        if (stateMachine.powerups.Count > 0) {
-            if (stateMachine.selectedPowerupIndex < stateMachine.powerups.Count - 1) {
-                stateMachine.selectedPowerupIndex += 1;
-            } else {
-                stateMachine.selectedPowerupIndex = 0;
+        if (stateMachine.selectedPowerupIndex < 2) stateMachine.selectedPowerupIndex += 1;
+        else stateMachine.selectedPowerupIndex = 0;
+        UpdatePowerupsUi();
+    }
+
+    void UsePowerUp() {
+        for (int i = 0; i < stateMachine.powerups.Count; i++) {
+            if (stateMachine.powerups[i].index == stateMachine.selectedPowerupIndex) {
+                //Powerup _powerUp = stateMachine.powerups[i];
+                switch (stateMachine.powerups[i].type) {
+                    case PowerupType.nitrus: UseNitrus(); break;
+                    case PowerupType.rocket: UseRocket(); break;
+                    case PowerupType.shield: UseShield(); break;
+                }
+                stateMachine.powerups.RemoveAt(i);
+                break;
             }
         }
         UpdatePowerupsUi();
     }
 
-    void UsePowerUp() {
-        if (!stateMachine.powerups[stateMachine.selectedPowerupIndex].isAvailable) return;
-
-        switch (stateMachine.powerups[stateMachine.selectedPowerupIndex].type) {
-            case PowerupType.nitrus: UseNitrus(); break;
-            case PowerupType.rocket: UseRocket(); break;
-            case PowerupType.shield: UseShield(); break;
-        }
-
-        var _tmp = stateMachine.powerups[stateMachine.selectedPowerupIndex];
-        _tmp.isAvailable = false;
-        stateMachine.powerups[stateMachine.selectedPowerupIndex] = _tmp;
-
-        //stateMachine.powerups.RemoveAt(stateMachine.selectedPowerupIndex);
-        UpdatePowerupsUi();
-    }
-
-    // setters , for inputs
-    public void SetMoveinput(Vector2 _moveInput) {
-        moveInput = _moveInput;
-    }
-
-    public void SetSpacebarPressed(bool _moveInput) {
-        isSpacebarPressed = _moveInput;
-    }
-
     // input
-    public void OnMove(InputValue value) => moveInput = value.Get<Vector2>();
-    public void OnJump(InputValue input) => isSpacebarPressed = input.Get<float>() == 1; // this will set the spaccebar pressed bool to true when input is 1
+    public void OnMove(InputValue value) {
+        if (gameObject.CompareTag("Player"))
+            stateMachine.moveInput = value.Get<Vector2>();
+    }
+    public void OnJump(InputValue input) {
+        if (gameObject.CompareTag("Player"))
+            isSpacebarPressed = input.Get<float>() == 1; // this will set the spaccebar pressed bool to true when input is 1
+    }
+
     #endregion
 
     #region powerups
     private async Task UseNitrus() {
         usingNitrus = true;
-        await Task.Delay(1000 * 5); // this is going to wait for 5 seconds 
+        await Task.Delay(1000 * 5); // this is going to wait for 5 seconds
         usingNitrus = false;
     }
 
@@ -231,7 +193,7 @@ public class CarController : MonoBehaviour {
 
     public void InitializePowerupsUi() {
         // this will just initialise the place holders for the ui components for the powerups nothings else .
-        // not using this count cur players will always have a set amount of powerupds to hold , 
+        // not using this count cur players will always have a set amount of powerupds to hold ,
         //var PowerupTypeCount = Enum.GetNames(typeof(PowerupType)).Length;
 
         float spaceBetween = 120;
@@ -249,14 +211,36 @@ public class CarController : MonoBehaviour {
     void UpdatePowerupsUi() {
 
         for (int i = 0; i < stateMachine.reusablePowerupsUiObjects.Count; i++) {
+
+            // this will overlay a ui image to indicate the selected powerup
             stateMachine.reusablePowerupsUiObjects[i].GetComponent<Image>().color = new Color(255, 255, 255, i == stateMachine.selectedPowerupIndex ? 100 : 0);
 
-            // setting the states on the ui images !
-            stateMachine.reusablePowerupsUiObjects[i].GetChild(0).gameObject.SetActive(stateMachine.powerups[i].isAvailable && stateMachine.powerups[i].type == PowerupType.rocket);
-            stateMachine.reusablePowerupsUiObjects[i].GetChild(1).gameObject.SetActive(stateMachine.powerups[i].isAvailable && stateMachine.powerups[i].type == PowerupType.nitrus);
-            stateMachine.reusablePowerupsUiObjects[i].GetChild(2).gameObject.SetActive(stateMachine.powerups[i].isAvailable && stateMachine.powerups[i].type == PowerupType.shield);
-        }
+            for (int j = 0; j < stateMachine.powerups.Count; j++) {
+                if (stateMachine.powerups[j].index == i) {
+                    Powerup _powerUp = stateMachine.powerups[j];
 
+                    // main enable powerup ui image function !
+                    stateMachine.reusablePowerupsUiObjects[i].GetChild(0).transform.localScale = _powerUp.type == PowerupType.rocket ? new Vector3(1, 1, 1) : new Vector3(0, 0, 0);
+                    stateMachine.reusablePowerupsUiObjects[i].GetChild(1).transform.localScale = _powerUp.type == PowerupType.nitrus ? new Vector3(1, 1, 1) : new Vector3(0, 0, 0);
+                    stateMachine.reusablePowerupsUiObjects[i].GetChild(2).transform.localScale = _powerUp.type == PowerupType.shield ? new Vector3(1, 1, 1) : new Vector3(0, 0, 0);
+
+                    break;
+                } else {
+                    // setting for when the powerup is used , so it disable the used one !
+                    stateMachine.reusablePowerupsUiObjects[i].GetChild(0).transform.localScale = new Vector3(0, 0, 0);
+                    stateMachine.reusablePowerupsUiObjects[i].GetChild(1).transform.localScale = new Vector3(0, 0, 0);
+                    stateMachine.reusablePowerupsUiObjects[i].GetChild(2).transform.localScale = new Vector3(0, 0, 0);
+                }
+            }
+
+            // setting for cases when there is no powerups !
+            if (stateMachine.powerups.Count == 0) {
+                stateMachine.reusablePowerupsUiObjects[i].GetChild(0).transform.localScale = new Vector3(0, 0, 0);
+                stateMachine.reusablePowerupsUiObjects[i].GetChild(1).transform.localScale = new Vector3(0, 0, 0);
+                stateMachine.reusablePowerupsUiObjects[i].GetChild(2).transform.localScale = new Vector3(0, 0, 0);
+            }
+
+        }
     }
 
     #endregion
@@ -266,11 +250,13 @@ public class CarController : MonoBehaviour {
     public float GuiXPos = 0;
     public float GuiYPos = 0;
     public float GuiYSpace = 1;
+    public GUIStyle customStyle = new();
     public float GuiCellWidth = 200;
     public float GuiCellHeight = 20;
+
     void OnGUI() {
         float pos = GuiYPos;
-        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), "KPH: " + stateMachine.KPH.ToString("0"));
+        GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), "KPH: " + stateMachine.KPH.ToString("0"), customStyle);
         pos += GuiYSpace;
         //GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), "selected powerup: " + stateMachine.powerups[stateMachine.selectedPowerupIndex].ToString());
         //pos += GuiYSpace;

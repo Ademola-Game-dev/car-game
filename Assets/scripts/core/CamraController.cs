@@ -18,7 +18,11 @@ public class CamraController : MonoBehaviour {
 
     void Start() {
         carStateMachine = GameObject.FindGameObjectsWithTag("Player").FirstOrDefault()?.GetComponent<CarStateMachine>();
-        if (carStateMachine == null) throw new System.Exception("no player found");
+        if (carStateMachine == null) {
+            print("no player found");
+            return;
+        }
+        //if (carStateMachine == null) throw new System.Exception("no player found");
         targetTransform = carStateMachine.transform;
         offset = carStateMachine.CarStats.camraPositions[carStateMachine.cameraindexPos];
         transform.position = targetTransform.TransformPoint(new Vector3(0, offset.y, offset.x));
@@ -27,6 +31,8 @@ public class CamraController : MonoBehaviour {
 
 
     void FixedUpdate() {
+        if (carStateMachine == null) return;
+
         transform.LookAt(targetTransform.TransformPoint(new Vector3(0, carStateMachine.CarStats.lookAtPoint.y, carStateMachine.CarStats.lookAtPoint.x)));
         offset = carStateMachine.CarStats.camraPositions[carStateMachine.cameraindexPos];
 
@@ -34,7 +40,7 @@ public class CamraController : MonoBehaviour {
         transform.position = Vector3.Lerp(transform.position,
                     targetTransform.TransformPoint(new Vector3(0, offset.y, offset.x)),
                     Time.deltaTime * siddewaysLerpSpeed);
-        
+
         //add this so the car dont go too far , since we do lerp earlier for the sideways effect
         transform.localPosition += transform.forward * (result / 2);  // replace 2 with a greater value to make the rubber bad effect weaker
 
