@@ -28,6 +28,9 @@
 /Assets/scripts/ModTools
 /Assets/scripts/WorldChunksStreamer
 /Assets/scripts/temp
+/Assets/effects
+/Assets/Scenes/nfs hp
+/Assets/Scenes/Rarui
 # Visual Studio cache directory
 .vs/
 

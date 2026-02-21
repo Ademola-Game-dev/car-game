@@ -184,6 +184,55 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d0ac00101c8a400786952c302e51243, type: 3}
+--- !u!1 &854025436
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 854025438}
+  - component: {fileID: 854025437}
+  m_Layer: 0
+  m_Name: volume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &854025437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854025436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: f6c5437ba240d5045ad250b0ab2a9e8e, type: 2}
+--- !u!4 &854025438
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 854025436}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.3716711, y: 6.6878347, z: 23.443392}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1452367521
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -243,6 +292,10 @@ PrefabInstance:
     - target: {fileID: 9061645243404653168, guid: 9b2bfb92f2dc7415ead6a5971a910953, type: 3}
       propertyPath: m_Name
       value: Ferrari_SF90Stradai
+      objectReference: {fileID: 0}
+    - target: {fileID: 9061645243404653168, guid: 9b2bfb92f2dc7415ead6a5971a910953, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -370,6 +423,132 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1001 &1582436113
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 637591237912595859, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_Name
+      value: Lamborghini Huracan Tecnica PREFAB
+      objectReference: {fileID: 0}
+    - target: {fileID: 637591237912595859, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518585076296565491, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.2763033
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518585076296565491, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.828127
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518585076296565491, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 23.343498
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518585076296565491, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518585076296565491, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518585076296565491, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518585076296565491, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518585076296565491, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518585076296565491, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4518585076296565491, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 049f0a57bc5e749ce963591e6e2a5943, type: 3}
+--- !u!1001 &1661228128
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 29071446060086404, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.9498668
+      objectReference: {fileID: 0}
+    - target: {fileID: 29071446060086404, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.8281274
+      objectReference: {fileID: 0}
+    - target: {fileID: 29071446060086404, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 24.21883
+      objectReference: {fileID: 0}
+    - target: {fileID: 29071446060086404, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 29071446060086404, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 29071446060086404, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 29071446060086404, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 29071446060086404, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 29071446060086404, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 29071446060086404, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4190674932333595294, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_Name
+      value: c 63
+      objectReference: {fileID: 0}
+    - target: {fileID: 4190674932333595294, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8076131627211135613, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
+      propertyPath: steerSpeedMod
+      value: 0.003
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 47c29219e4a0e4b98b0452681b8c9218, type: 3}
 --- !u!1001 &1940762627
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -422,6 +601,118 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: curveMod
+      value: 1.552
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: MaxSteerAngle
+      value: 2.46
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steerSpeedMod
+      value: 0.003
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steerTurnSpeed
+      value: 1.557
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steerSnapBackSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: slipSteerRadiusMultiplier
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[1].time
+      value: 40.944256
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[2].time
+      value: 239.67496
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[3].time
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[1].value
+      value: 1.9004545
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[2].value
+      value: 65.29852
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[3].value
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[0].inSlope
+      value: 0.014790648
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[1].inSlope
+      value: 0.09677185
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[2].inSlope
+      value: 0.41822535
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[0].inWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[0].outSlope
+      value: 0.014790648
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[1].inWeight
+      value: 0.09262723
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[1].outSlope
+      value: 0.09677185
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[2].inWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[2].outSlope
+      value: 0.41822535
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[0].outWeight
+      value: 0.07196968
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[1].outWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[2].outWeight
+      value: 0.33333334
+      objectReference: {fileID: 0}
+    - target: {fileID: 2311785612754174857, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: steeringCurve.m_Curve.Array.data[2].tangentMode
+      value: 34
+      objectReference: {fileID: 0}
+    - target: {fileID: 3156693733440377432, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: brakePower
+      value: 40831
+      objectReference: {fileID: 0}
+    - target: {fileID: 3156693733440377432, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: handBrakePower
+      value: 182784
+      objectReference: {fileID: 0}
     - target: {fileID: 3396831504517664365, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: m_Name
       value: Ferrari testarosa PREFAB
@@ -435,24 +726,52 @@ PrefabInstance:
       value: 2.29
       objectReference: {fileID: 0}
     - target: {fileID: 5684482186455399854, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: driveMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684482186455399854, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: inistalFow
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684482186455399854, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: fowDisplaceAmount
+      value: 8.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684482186455399854, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: drawOnlyOnSelected
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5684482186455399854, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: fowDisplaceLerpSpeed
+      value: 3.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7239004036011205608, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: wheelColliders.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7239004036011205608, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: wheelTransforms.Array.size
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: GuiXPos
-      value: 89.39
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: GuiYSpace
-      value: 17.95
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+      propertyPath: curveModifier
+      value: 1.196
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: customStyle.m_Normal.m_Background
       value: 
-      objectReference: {fileID: 2800000, guid: bf2ee8363afe046088110319579f60b8, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: forwardFrictionCurve.m_Curve.Array.size
@@ -472,15 +791,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[1].time
-      value: 0.8546034
+      value: 0.8639555
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[2].time
-      value: 0.96196175
+      value: 1.2862233
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[3].time
-      value: 1.6779265
+      value: 2.5212631
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[4].time
@@ -488,19 +807,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[0].value
-      value: 1.4
+      value: 1.3158934
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[1].value
-      value: 1.3227364
+      value: 1.3646897
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[2].value
-      value: 1.0393052
+      value: 0.7292792
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[3].value
-      value: 0.90390694
+      value: 0.8708539
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[4].value
@@ -516,15 +835,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[1].inSlope
-      value: -0.2566899
+      value: -0.14371178
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[2].inSlope
-      value: -0.58338714
+      value: -0.036987163
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[3].inSlope
-      value: -0.3807877
+      value: 0.00013234385
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[4].inSlope
@@ -564,27 +883,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[1].inWeight
-      value: 0.33333334
+      value: 0.08478587
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[1].outSlope
-      value: -0.2566899
+      value: -0.14371178
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[2].inWeight
-      value: 0.33333334
+      value: 0.56142235
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[2].outSlope
-      value: -0.58338714
+      value: -0.036987163
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[3].inWeight
-      value: 0.33333334
+      value: 0.05863957
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[3].outSlope
-      value: -0.3807877
+      value: 0.00013234385
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[4].inWeight
@@ -624,11 +943,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[2].outWeight
-      value: 0.33333334
+      value: 0.08247081
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: slipFrictionCurve.m_Curve.Array.data[3].outWeight
-      value: 0.33333334
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8882697039452683179, guid: d94dd7c448e07428daee036916b9f113, type: 3}
       propertyPath: forwardFrictionCurve.m_Curve.Array.data[0].inSlope
@@ -779,6 +1098,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d94dd7c448e07428daee036916b9f113, type: 3}
+--- !u!1001 &1969466804
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4022545624955109656, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 68.15303
+      objectReference: {fileID: 0}
+    - target: {fileID: 4022545624955109656, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.000011444092
+      objectReference: {fileID: 0}
+    - target: {fileID: 4022545624955109656, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 19.036572
+      objectReference: {fileID: 0}
+    - target: {fileID: 4022545624955109656, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4022545624955109656, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4022545624955109656, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4022545624955109656, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4022545624955109656, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4022545624955109656, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4022545624955109656, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6813589537706532022, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
+      propertyPath: m_Name
+      value: r 35 prefab
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 278e94fd959484e74b04d25c64e6578e, type: 3}
 --- !u!33 &902178508836811788
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1148,6 +1524,7 @@ MeshFilter:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 854025438}
   - {fileID: 1472875594}
   - {fileID: 4263489410378152873}
   - {fileID: 6318521695122577963}
@@ -1155,3 +1532,6 @@ SceneRoots:
   - {fileID: 2605366285276113643}
   - {fileID: 1940762627}
   - {fileID: 1452367521}
+  - {fileID: 1661228128}
+  - {fileID: 1582436113}
+  - {fileID: 1969466804}

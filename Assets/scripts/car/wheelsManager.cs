@@ -4,7 +4,7 @@ using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(CarStateMachine))]
-public class wheelsManager : MonoBehaviour {
+public class WheelsManager : MonoBehaviour {
 
     private CarStateMachine stateMachine;
 
@@ -13,6 +13,9 @@ public class wheelsManager : MonoBehaviour {
 
     [Header("curve friction")]
     public AnimationCurve slipFrictionCurve;
+
+    [Header("mods")]
+    [Range(1,2)]public float curveModifier = 1;
 
     private float[] forwardSlip;
     private float[] sidewaysSlip;
@@ -74,12 +77,12 @@ public class wheelsManager : MonoBehaviour {
                 overallSlip[i] = Mathf.Abs(hit.forwardSlip) + Mathf.Abs(hit.sidewaysSlip);
 
                 forwardFriction = stateMachine.wheelColliders[i].forwardFriction;
-                newStiffnessForward[i] = slipFrictionCurve.Evaluate(overallSlip[i]);
+                newStiffnessForward[i] = slipFrictionCurve.Evaluate(overallSlip[i]) * curveModifier;
                 forwardFriction.stiffness = newStiffnessForward[i];
                 stateMachine.wheelColliders[i].forwardFriction = forwardFriction;
 
                 sidewaysFriction = stateMachine.wheelColliders[i].sidewaysFriction;
-                newStiffnessSideways[i] = slipFrictionCurve.Evaluate(overallSlip[i]);
+                newStiffnessSideways[i] = slipFrictionCurve.Evaluate(overallSlip[i]) * curveModifier;
                 sidewaysFriction.stiffness = newStiffnessSideways[i];
                 stateMachine.wheelColliders[i].sidewaysFriction = sidewaysFriction;
 
@@ -114,15 +117,16 @@ public class wheelsManager : MonoBehaviour {
 
 
     #region gui
-    [Header("gui")]
-    public float GuiXPos = 0;
-    public float GuiYPos = 0;
-    public float GuiYSpace = 1;
-    public GUIStyle customStyle = new();
-    public float GuiCellWidth = 200;
-    public float GuiCellHeight = 20;
+     [Header("gui")]
+     [HideInInspector] public float GuiXPos = 0;
+     [HideInInspector] public float GuiYPos = 0;
+     [HideInInspector] public float GuiYSpace = 1;
+     [HideInInspector] public GUIStyle customStyle = new();
+     [HideInInspector] public float GuiCellWidth = 200;
+     [HideInInspector] public float GuiCellHeight = 20;
 
     void OnGUI() {
+        return;
         float pos = GuiYPos;
 
         // forwardSlip

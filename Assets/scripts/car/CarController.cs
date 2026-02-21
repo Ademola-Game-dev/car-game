@@ -4,102 +4,79 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.Splines;
+
 
 [RequireComponent(typeof(CarStateMachine))]
+[RequireComponent(typeof(CarStats))]
 public class CarController : MonoBehaviour {
 
-    #region variables , inspector
+    #region variables 
     private CarStateMachine stateMachine;
 
-    public Transform centerOfMassTransform;
+    [Header("forces")]
+    [Range(1,10)]public float downForceFactor = 2;
+    [Tooltip("this will increase the sideways velocity while on high speed , more stability when turning!")]
+    [Range(0, 0.001f)] public float angularVelocityFactor = 0.0002f;
+    [Range(0, 0.001f)] public float linearVelocityFactor = 0.0002f;
 
-    [Range(0.1f, 1f)] public float gizmosSphereDiameter = .4f;
-    [Range(0, 20)] public float fowDisplaceAmount = 0.1f;
-    [Range(0, 20)] public float fowDisplaceLerpSpeed = 1;
-    public int inistalFow = 80;
-    public bool drawOnlyOnSelected = false;
-
-
-    //private
-
-    private bool isSpacebarPressed;
-    private bool isShiftPressed;
-    private bool usingNitrus = false;
+    //private 
+    public bool usingNitrus = false;
+    public float _downForce ;
+    
     #endregion
 
     #region main
     void Start() {
         stateMachine = GetComponent<CarStateMachine>();
-        stateMachine.rigidbody.centerOfMass = centerOfMassTransform.localPosition;
         InitializePowerupsUi();
     }
 
+    // update for the current input system 
     void Update() {
-        if (Input.GetKeyDown(KeyCode.Tab)) stateMachine.cameraindexPos = stateMachine.cameraindexPos < 2 ? stateMachine.cameraindexPos + 1 : 0;
-
-        isSpacebarPressed = Input.GetKey(KeyCode.Space);
-        isShiftPressed = Input.GetKey(KeyCode.LeftShift);
-
+    
+        //if (Input.GetKeyDown(KeyCode.Tab)) stateMachine.cameraindexPos = stateMachine.cameraindexPos < 2 ? stateMachine.cameraindexPos + 1 : 0;
         if (Input.GetKeyUp(KeyCode.E)) CyclePowerupIndex();
         if (Input.GetKeyUp(KeyCode.F)) UsePowerUp();
-
-        TranslatePwertoWheels();
 
     }
 
     void FixedUpdate() {
         HandleEeffects();
         stateMachine.KPH = stateMachine.rigidbody.linearVelocity.magnitude * 3.6f;
+
+        UpdateSpline();
+        Physics();
+
     }
 
-    public void TranslatePwertoWheels() {
-        return;
-        switch (stateMachine.CarStats.driveMode) {
-            case driveMode.frontWheelDrive:
-                stateMachine.wheelColliders[0].motorTorque = stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
-                stateMachine.wheelColliders[1].motorTorque = stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
-                break;
-            case driveMode.rearWheelDrive:
-                stateMachine.wheelColliders[2].motorTorque = isSpacebarPressed ? 0 : stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
-                stateMachine.wheelColliders[3].motorTorque = isSpacebarPressed ? 0 : stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
-                break;
-            case driveMode.allWheelDrive:
-                for (int i = 0; i < stateMachine.wheelColliders.Length; i++) {
-                    if (i > 1) {
-                        stateMachine.wheelColliders[i].motorTorque = isSpacebarPressed ? 0 : stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
-                    } else {
-                        stateMachine.wheelColliders[i].motorTorque = stateMachine.moveInput.y * (stateMachine.CarStats.MaxPowerNM + stateMachine.boostNm);
-                    }
-                    stateMachine.wheelColliders[i].brakeTorque = stateMachine.moveInput.y < 0.0 ? Mathf.Abs(stateMachine.moveInput.y) * 100000 : 0;
-                }
-                break;
-        }
-
-        stateMachine.wheelColliders[2].brakeTorque = !isSpacebarPressed ? 0 : 200000;
-        stateMachine.wheelColliders[3].brakeTorque = !isSpacebarPressed ? 0 : 200000;
+    public void Physics() {
 
         //this is world axis
         //stateMachine.rigidbody.AddForce(transform.up * (downforceMultiplier * stateMachine.KPH));
 
         //this should be local axis
-        stateMachine.rigidbody.AddForce(-stateMachine.rigidbody.transform.up * stateMachine.CarStats.downforceCurve.Evaluate(stateMachine.KPH), ForceMode.Force);
-        stateMachine.rigidbody.angularDamping = Mathf.Lerp(stateMachine.rigidbody.angularDamping, stateMachine.KPH * stateMachine.CarStats.angularVelocityMultiplier, Time.deltaTime * 3);
-        stateMachine.rigidbody.linearDamping = Mathf.Lerp(stateMachine.rigidbody.linearDamping, stateMachine.KPH * stateMachine.CarStats.linearVelocityMultiplier, Time.deltaTime * 3);
+        _downForce = stateMachine.KPH * downForceFactor;
+        stateMachine.rigidbody.AddForce(-stateMachine.rigidbody.transform.up * _downForce , ForceMode.Force);
+        //stateMachine.rigidbody.angularDamping = Mathf.Lerp(stateMachine.rigidbody.angularDamping, stateMachine.KPH * stateMachine.CarStats.angularVelocityFactor, Time.deltaTime * 3);
+        //stateMachine.rigidbody.linearDamping = Mathf.Lerp(stateMachine.rigidbody.linearDamping, stateMachine.KPH * stateMachine.CarStats.linearVelocityFactor, Time.deltaTime * 3);
+        stateMachine.rigidbody.angularDamping = stateMachine.KPH * angularVelocityFactor;
+        stateMachine.rigidbody.linearDamping = stateMachine.KPH * linearVelocityFactor;
 
     }
 
 
     // camera effects on shift press
     public void HandleEeffects() {
-        if (Camera.main == null) return;
+        if (Camera.main == null || stateMachine.CarStats == null) return;
 
-        if (isShiftPressed || usingNitrus) {
+        if (  stateMachine.isShiftPressed || usingNitrus) {
             stateMachine.boostNm = stateMachine.CarStats.boostPowerNM;
-            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, inistalFow + fowDisplaceAmount, fowDisplaceLerpSpeed * Time.deltaTime);
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView,stateMachine.CarStats.inistalFow + stateMachine.CarStats.fowDisplaceAmount, stateMachine.CarStats.fowDisplaceLerpSpeed * Time.deltaTime);
             SetExhaust(true);
         } else {
             stateMachine.boostNm = 0;
-            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, inistalFow, fowDisplaceLerpSpeed * Time.deltaTime);
+            Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView,stateMachine.CarStats.inistalFow, stateMachine.CarStats.fowDisplaceLerpSpeed * Time.deltaTime);
             SetExhaust(false);
         }
     }
@@ -126,15 +103,9 @@ public class CarController : MonoBehaviour {
         UpdatePowerupsUi();
     }
 
-    // input
-    public void OnMove(InputValue value) {
-        if (gameObject.CompareTag("Player"))
-            stateMachine.moveInput = value.Get<Vector2>();
-    }
-    public void OnJump(InputValue input) {
-        if (gameObject.CompareTag("Player"))
-            isSpacebarPressed = input.Get<float>() == 1; // this will set the spaccebar pressed bool to true when input is 1
-    }
+    void OnSwitch(InputValue value) => stateMachine.cameraindexPos = stateMachine.cameraindexPos < 2 ? stateMachine.cameraindexPos + 1 : 0;
+
+    
 
     #endregion
 
@@ -155,22 +126,45 @@ public class CarController : MonoBehaviour {
 
     #endregion
 
-    #region Gizmos
-    private void OnDrawGizmosSelected() {
-        if (drawOnlyOnSelected) GizmosLogic();
+    #region spline
+    private int closestSplineIndex;
+    private float minDistance;
+    private float3  nearestPoint,localPos;
+    private float  dist, t;
+    private Spline  spline;
+
+
+    void UpdateSpline() {
+        // Todo : this needs to be pointed automatically
+        if( stateMachine.splineContainer == null)return;
+        //Convert racer position to the Spline Container's local space
+        localPos = stateMachine.splineContainer.transform.InverseTransformPoint(transform.position);
+
+        // this is the distance from the object to the nearest point 
+        minDistance = float.MaxValue;
+
+        // method to loop thru all the spline objects inside a spline container 
+        for (int i = 0; i < stateMachine.splineContainer.Splines.Count; i++) {
+            spline = stateMachine.splineContainer.Splines[i];
+
+            // Get nearest point on this specific spline
+            SplineUtility.GetNearestPoint(spline, localPos, out nearestPoint, out t);
+            dist = math.distance(localPos, nearestPoint);
+
+            if (dist < minDistance) {
+                minDistance = dist;
+                closestSplineIndex = i;
+                //nearestPointT = t;
+            }
+        }
+
+        stateMachine.splinePositionFloat = t;
+
+
+
+
     }
 
-    private void OnDrawGizmos() {
-        if (!drawOnlyOnSelected) GizmosLogic();
-
-    }
-
-    void GizmosLogic() {
-
-        //Gizmos.DrawWireSphere(transform.position + stats.lookAtPoint, gizmosSphereDiameter);
-
-
-    }
     #endregion
 
     #region bus
@@ -255,6 +249,7 @@ public class CarController : MonoBehaviour {
     public float GuiCellHeight = 20;
 
     void OnGUI() {
+        if(!CompareTag("Player"))return;
         float pos = GuiYPos;
         GUI.Label(new Rect(GuiXPos, pos, GuiCellWidth, GuiCellHeight), "KPH: " + stateMachine.KPH.ToString("0"), customStyle);
         pos += GuiYSpace;

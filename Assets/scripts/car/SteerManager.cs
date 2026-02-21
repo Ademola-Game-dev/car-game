@@ -1,4 +1,5 @@
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 [RequireComponent(typeof(CarStateMachine))]
@@ -6,27 +7,32 @@ public class SteerManager : MonoBehaviour {
 
     private CarStateMachine stateMachine;
 
+    [Tooltip("this will make the steer have less effect , higher speed = less steer thus evaluate curve at speeds apporpiately")]
+    public AnimationCurve steeringCurve;
+    [Range(1, 2)] public float curveMod = 1;
+
+    [Header("max turn angle")]
     [Tooltip("lower = more steer")]
     [Range(2, 5)] public float MaxSteerAngle = 4;
-    [Tooltip("more = less steer at high speed !")]
-    [Range(0, 0.5f)] public float steeringRadiusModifier;
     [Tooltip("this will add counter steer mod , making it possible to hold the drift and also be able to correct the steer ! , prefered to be set about 10-15 , lowe = less mod = harder to hold the drift")]
-    [Range(0, 10)] public float slipSteerRadiusMultiplier = 1;
+    [Range(0, 3)] public float slipSteerRadiusMultiplier = 1;
 
-    [Tooltip("less = steers quicker , not very controllable when too fast , suggested 14")]
-    [Range(1, 20)] public float initialSteerDampSpeed = 1;
-    [Tooltip("this will simply scale based on the car speed , slower turns at high speed !  , suggested 0.2f")]
-    [Range(0, .5f)] public float steerDampMultiplier = 1.5f;
+    [Header("steering turn speed")]
+    [Tooltip("lerped input for turing the wheels , this determines how fast the speed turn , higher float value = faster steer turn")]
+    [Range(1, 2)] public float steerTurnSpeed = 1;
+    [Tooltip("slow down the steering wheel speed based on the kph , higher = slower steer")]
+    [Range(0, 0.003f)] public float steerSpeedMod = 0.001f;
 
-    [Header("visualizers")]
+
+    [Header("debug , needs testing")]
+    [Range(1, 5)] public int steerSnapBackSpeed = 2;
+
+    public float overallSlip;
     public float modifiedRadius;
-    private float wheelbase = 2.5f, trackwidth = 1.5f;
-    public float slipRadiusModifier = 1;
-    public float smoothedSidewaysSplipSim;
-    private Vector2 lerpedmoveInput;
-    private Vector2 Velocity = new(0, 0);
-    public float steerDampSpeed;
     public float steerModifier = 0;
+    public float steerSeed;
+    private Vector2 lerpedmoveInput;
+    private float wheelbase = 2.5f, trackwidth = 1.5f;
 
     void Start() {
         stateMachine = GetComponent<CarStateMachine>();
@@ -36,16 +42,20 @@ public class SteerManager : MonoBehaviour {
 
     void FixedUpdate() {
 
-        steerDampSpeed = initialSteerDampSpeed + (stateMachine.KPH * steerDampMultiplier);
-        smoothedSidewaysSplipSim = Mathf.Lerp(smoothedSidewaysSplipSim, stateMachine.overallSidewaysSlip, Time.deltaTime * 4);
-        modifiedRadius = Mathf.Lerp(modifiedRadius, stateMachine.KPH * steeringRadiusModifier, Time.deltaTime * 2);
-        slipRadiusModifier = Math.Clamp(smoothedSidewaysSplipSim * slipSteerRadiusMultiplier, 0, modifiedRadius);
+        overallSlip = Mathf.Lerp(overallSlip, stateMachine.overallSlip, Time.deltaTime * 2);
 
-        steerModifier = modifiedRadius - slipRadiusModifier;
+        // radius calculate , less angle at higher speeds , no understeer this way 
+        // calculate sideways slip for when losing traction and needs to be corrected , important to held the drift !
+        modifiedRadius = steeringCurve.Evaluate(stateMachine.KPH) * curveMod;
+        steerModifier = math.max(0, modifiedRadius - (modifiedRadius * (overallSlip * slipSteerRadiusMultiplier)));
 
 
         //concventional input forwading to the wheel turn logic !
-        lerpedmoveInput = Vector2.SmoothDamp(lerpedmoveInput, stateMachine.moveInput, ref Velocity, Time.deltaTime * (stateMachine.moveInput.x != 0 ? steerDampSpeed : steerDampSpeed / 3));
+        // decrease steer speed by kph
+        steerSeed = stateMachine.moveInput.x != 0 ? steerTurnSpeed - (stateMachine.KPH * steerSpeedMod) : steerTurnSpeed * steerSnapBackSpeed;
+        lerpedmoveInput = Vector2.Lerp(lerpedmoveInput, stateMachine.moveInput, Time.deltaTime * steerSeed);
+
+
         if (lerpedmoveInput.x > 0) {
             stateMachine.wheelColliders[0].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / ((MaxSteerAngle + steerModifier) + (trackwidth / 2))) * lerpedmoveInput.x;
             stateMachine.wheelColliders[1].steerAngle = Mathf.Rad2Deg * Mathf.Atan(wheelbase / ((MaxSteerAngle + steerModifier) - (trackwidth / 2))) * lerpedmoveInput.x;

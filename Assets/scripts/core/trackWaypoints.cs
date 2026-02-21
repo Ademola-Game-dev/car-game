@@ -51,90 +51,31 @@ public class trackWaypoints : MonoBehaviour {
 
     // ... inside gizmosLogic()
     void gizmosLogic() {
-        Gizmos.color = linecolor;
-
-        // ... (Your code to populate 'nodes' list remains the same)
-
-        Transform[] path = GetComponentsInChildren<Transform>();
-
-        nodes = new List<Transform>();
-        for (int i = 1; i < path.Length; i++) {
-            nodes.Add(path[i]);
-        }
-
-        if (reversepath) {
-            nodes.Reverse();
-        }
-
-        // --- Start Spline Logic ---
-
-        // Need at least 2 nodes to draw a line, and 4 for a proper Catmull-Rom segment
-        if (nodes.Count < 2) {
-            // Still draw the spheres for visibility
-            for (int i = 0; i < nodes.Count; i++) {
-                Gizmos.DrawWireSphere(nodes[i].position, SphereRadius);
-            }
-            return;
-        }
-
-        Vector3 previousPosition = nodes[0].position;
-
-        for (int i = 0; i < nodes.Count; i++) {
-            // Draw spheres at the actual waypoints
-            Gizmos.DrawWireSphere(nodes[i].position, SphereRadius);
-
-            // Define the four control points (P0, P1, P2, P3) for the segment P1-P2
-            Vector3 p0 = nodes[i == 0 ? (closeLoop ? nodes.Count - 1 : 0) : i - 1].position;
-            Vector3 p1 = nodes[i].position;
-            Vector3 p2 = nodes[i == nodes.Count - 1 ? (closeLoop ? 0 : nodes.Count - 1) : i + 1].position;
-            Vector3 p3 = nodes[i >= nodes.Count - 2 ? (closeLoop ? (i + 2) % nodes.Count : nodes.Count - 1) : i + 2].position;
-
-            // If the path is not a loop, handle the start and end caps by doubling the first/last point
-            if (!closeLoop) {
-                if (i == 0) p0 = p1; // segment P1-P2, P1 is the first node
-                if (i == nodes.Count - 2) p3 = p2; // segment P(N-2)-P(N-1), P(N-1) is the last node
-                if (i == nodes.Count - 1) continue; // Skip the last node, as it's only P2 in the last segment
-            } else {
-                if (i == nodes.Count - 1) { // When drawing the last segment back to the start
-                    p2 = nodes[0].position;
-                    p3 = nodes[1].position;
-                }
-            }
-
-            // If it's the very last segment and not a loop, stop here
-            if (!closeLoop && i == nodes.Count - 1) continue;
-
-            // --- Draw the Spline Segment ---
-
-            previousPosition = p1; // Start the segment drawing from P1
-
-            for (int j = 1; j <= splineSegmentsPerNode; j++) {
-                float t = (float)j / splineSegmentsPerNode;
-
-                // Get the next position on the curve
-                Vector3 currentPosition = GetCatmullRomPosition(t, p0, p1, p2, p3);
-
-                // Draw the tiny line segment
-                Gizmos.DrawLine(previousPosition, currentPosition);
-
-                // Only draw arrow heads on the actual node positions, or maybe the end of the segment
-                // For smoother paths, drawing arrows only at the node positions (p2) is cleaner
-
-                // --- Arrow Head Logic (Optional) ---
-                if (showArrowHeads && j == splineSegmentsPerNode && currentPosition == p2) {
-                    Vector3 direction = (currentPosition - previousPosition).normalized;
-                    if (direction != Vector3.zero) {
-                        // Recalculate right/left vectors using Quaternion.LookRotation
-                        Vector3 right = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 + arrowHeadAngle, 0) * Vector3.forward;
-                        Vector3 left = Quaternion.LookRotation(direction) * Quaternion.Euler(0, 180 - arrowHeadAngle, 0) * Vector3.forward;
-                        Gizmos.DrawLine(currentPosition, currentPosition + right * arrowHeadLength);
-                        Gizmos.DrawLine(currentPosition, currentPosition + left * arrowHeadLength);
-                    }
-                }
-                // --- End Arrow Head Logic ---
-
-                previousPosition = currentPosition;
-            }
+    Gizmos.color = linecolor;
+    
+    // Populate 'nodes' list
+    Transform[] path = GetComponentsInChildren<Transform>();
+    nodes = new List<Transform>();
+    for (int i = 1; i < path.Length; i++) {
+        nodes.Add(path[i]);
+    }
+    
+    if (reversepath) {
+        nodes.Reverse();
+    }
+    
+    // Draw spheres and lines between nodes
+    for (int i = 0; i < nodes.Count; i++) {
+        // Draw sphere at current node
+        Gizmos.DrawWireSphere(nodes[i].position, SphereRadius);
+        
+        // Draw line to next node
+        int nextIndex = (i + 1) % nodes.Count;
+        
+        // Only draw line if not at last node (unless closeLoop is true)
+        if (closeLoop || i < nodes.Count - 1) {
+            Gizmos.DrawLine(nodes[i].position, nodes[nextIndex].position);
         }
     }
+}
 }

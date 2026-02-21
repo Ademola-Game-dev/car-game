@@ -757,6 +757,62 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &1365093340241843050
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4964678419392245656}
+  - component: {fileID: 8631161113744916573}
+  m_Layer: 0
+  m_Name: decal (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4964678419392245656
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365093340241843050}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.70681494, y: 0.00008345395, z: -0.00008355081, w: -0.7073986}
+  m_LocalPosition: {x: 0, y: 0.079, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 933538586035940014}
+  m_LocalEulerAnglesHint: {x: -89.966, y: 0, z: -359.986}
+--- !u!114 &8631161113744916573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365093340241843050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: -876546973899608171, guid: 4a2f235940a334a92a64fd8529acf03f, type: 3}
+  m_DrawDistance: 1000
+  m_FadeScale: 1
+  m_StartAngleFade: 28.888891
+  m_EndAngleFade: 88.14815
+  m_UVScale: {x: 1, y: 1}
+  m_UVBias: {x: 0, y: 0}
+  m_DecalLayerMask: 1
+  m_ScaleMode: 0
+  m_Offset: {x: 0, y: 0, z: 0.615}
+  m_Size: {x: 4.98, y: 6.63, z: 1.23}
+  m_FadeFactor: 1
 --- !u!1 &1939677506107707896
 GameObject:
   m_ObjectHideFlags: 0
@@ -6347,6 +6403,8 @@ Transform:
   - {fileID: 5308353817434665356}
   - {fileID: 2532350543986659543}
   - {fileID: 3231946419324688888}
+  - {fileID: 2018883383772643509}
+  - {fileID: 4964678419392245656}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &7826095647724001694
@@ -6357,7 +6415,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3396831504517664365}
   serializedVersion: 4
-  m_Mass: 1200
+  m_Mass: 982
   m_Drag: 0.09
   m_AngularDrag: 0.32
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -6375,7 +6433,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &6651324969678163564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6444,6 +6502,7 @@ MonoBehaviour:
   overallSlip: 0
   overallSidewaysSlip: 0
   overallForwardSlip: 0
+  splinePositionFloat: 0
   moveInput: {x: 0, y: 0}
 --- !u!114 &3492436177848082815
 MonoBehaviour:
@@ -6458,11 +6517,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   centerOfMassTransform: {fileID: 6786326348935916792}
-  gizmosSphereDiameter: 0.1
   fowDisplaceAmount: 20
   fowDisplaceLerpSpeed: 6.2
   inistalFow: 80
-  drawOnlyOnSelected: 1
+  downForceFactor: 3.26
+  angularVelocityFactor: 0.000822
+  linearVelocityFactor: 0.000152
   GuiXPos: 5
   GuiYPos: 80
   GuiYSpace: 13.61
@@ -6589,6 +6649,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  curveModifier: 1.272
   GuiXPos: 3
   GuiYPos: 2
   GuiYSpace: 11
@@ -6674,70 +6735,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   carStateMachine: {fileID: 7239004036011205608}
-  drawOnlyOnSelected: 1
   camraPositions:
   - {x: -3.67, y: 1.65}
   - {x: -4.46, y: 2.24}
   - {x: -6.28, y: 3.09}
   lookAtPoint: {x: 0.42, y: 1.4}
-  driveMode: 1
+  driveMode: 2
   MaxPowerNM: 661
   boostPowerNM: 419
-  downforceCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 4.1293564
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 240.03484
-      value: 53.944885
-      inSlope: 0.14393483
-      outSlope: 0.14393483
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 559.00836
-      value: 84.59013
-      inSlope: 0.077468224
-      outSlope: 0.077468224
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 782.0469
-      value: 95.93359
-      inSlope: 0.12611534
-      outSlope: 0.12611534
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.089624114
-      outWeight: 0.18309125
-    - serializedVersion: 3
-      time: 1139.8513
-      value: 109.87141
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  angularVelocityMultiplier: 0.00165
-  linearVelocityMultiplier: 0.000165
-  wireSphereRadius: 0.267
   lerpVal: 2.37
+  wireSphereRadius: 0.267
+  drawOnlyOnSelected: 1
+  drawGizmos: 1
 --- !u!114 &1822017453318196057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6763,16 +6772,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec8890f917f94429b9d215b1c229e2a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxSteerAngle: 3.04
-  steeringRadiusModifier: 0.066
-  slipSteerRadiusMultiplier: 1.76
-  initialSteerDampSpeed: 11.9
-  steerDampMultiplier: 0.5
-  modifiedRadius: 0
-  slipRadiusModifier: 1
-  smoothedSidewaysSplipSim: 0
-  steerDampSpeed: 0
-  steerModifier: 0
+  MaxSteerAngle: 2.68
+  steeringRadiusModifier: 0.293
+  slipSteerRadiusMultiplier: 9.48
+  steerTurnSpeed: 1.18
 --- !u!114 &3156693733440377432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6785,10 +6788,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8544c8f5c4d8c4404b1917c9cd275b69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handBrakeFrictionMultiplier: 2
   minRPM: 600
   maxRPM: 9000
-  engineLerp: 0.995
+  engineSmoothDamp: 9
   finalDrive: 3.6
   gears:
   - 0
@@ -6836,9 +6838,14 @@ MonoBehaviour:
   gearNum: 0
   reverse: 0
   engineRPM: 1001.76056
-  brakePower: 100
-  brakeLerpSpeed: 4
+  upShiftRpmBounce: 550
+  brakePower: 800
   handBrakePower: 100
+  handBrakeFrictionMultiplier: 2
+  throttleInput: 0
+  brakeInput: 0
+  velocity: 0
+  breakPowerWhenOverMaxRPM: 1000
   GuiXPos: 8.4
   GuiYPos: 91.59
   GuiYSpace: 19.9
@@ -12483,6 +12490,62 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &5564974735226314040
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2018883383772643509}
+  - component: {fileID: 3426324117590159029}
+  m_Layer: 0
+  m_Name: decal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2018883383772643509
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5564974735226314040}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.000050701194, y: 0.7068148, z: -0.70739865, w: 0.000050812952}
+  m_LocalPosition: {x: 0, y: 0.03, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 933538586035940014}
+  m_LocalEulerAnglesHint: {x: 89.956, y: 0, z: -179.992}
+--- !u!114 &3426324117590159029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5564974735226314040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: -876546973899608171, guid: 4a2f235940a334a92a64fd8529acf03f, type: 3}
+  m_DrawDistance: 1000
+  m_FadeScale: 1
+  m_StartAngleFade: 13.333336
+  m_EndAngleFade: 110.37034
+  m_UVScale: {x: 1, y: 1}
+  m_UVBias: {x: 0, y: 0}
+  m_DecalLayerMask: 1
+  m_ScaleMode: 0
+  m_Offset: {x: 0, y: 0, z: 0.715}
+  m_Size: {x: 4.98, y: 6.85, z: 1.43}
+  m_FadeFactor: 0.942
 --- !u!1 &5741054094272469943
 GameObject:
   m_ObjectHideFlags: 0

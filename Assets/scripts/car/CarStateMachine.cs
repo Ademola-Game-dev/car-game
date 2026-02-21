@@ -1,28 +1,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.Splines;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CarStats))]
 [RequireComponent(typeof(CarController))]
 [RequireComponent(typeof(SteerManager))]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(WheelsManager))]
+[RequireComponent(typeof(PlayerInput))]
 public class CarStateMachine : MonoBehaviour {
 
     #region StateMachine
+    // not good practice to expose these as public but i just happen to be lazy
     [HideInInspector] public CarStats CarStats;
+    [HideInInspector] public CarController CarController;
+    [HideInInspector] public SteerManager SteerManager;
+    [HideInInspector] public WheelsManager WheelsManager;
+    [HideInInspector] public SplineContainer splineContainer;
+    [HideInInspector] public EngineController engineController;
 
     [Header("Car Parts")]
-    public WheelCollider[] wheelColliders;
-    public Transform[] wheelTransforms;
+    [HideInInspector] public WheelCollider[] wheelColliders;
+    [HideInInspector] public Transform[] wheelTransforms;
     public ParticleSystem[] nitrus;
     [HideInInspector] public new Rigidbody rigidbody;
+    public Transform centerOfMassTransform;
 
     //camera
     [HideInInspector] public int cameraindexPos = 0;
 
     //car
-    public float KPH = 0;
+    [HideInInspector] public float KPH = 0;
     [HideInInspector] public int boostNm = 0; // this will add , not multiply to the overall power of the vehicle
+
 
     [Header("effects")]
     public int selectedPowerupIndex = 0;
@@ -35,19 +47,32 @@ public class CarStateMachine : MonoBehaviour {
     [HideInInspector] public List<RectTransform> reusablePowerupsUiObjects;
 
     [Header("outside variables")]
-    [HideInInspector] public float overallSlip = 0;
+     public float overallSlip = 0;
     [HideInInspector] public float overallSidewaysSlip = 0;
     [HideInInspector] public float overallForwardSlip = 0;
 
+    [Header("debug")]
+    [HideInInspector] public float splinePositionFloat = 0;
+
     [Header("inputs")]
     [HideInInspector] public Vector2 moveInput;
+    public bool isSpacebarPressed;
+    public bool isShiftPressed;
     #endregion
 
     #region initializer
-    void Start() => FindValues();
+    void Awake() => FindValues();
 
     public void FindValues() {
+        CarController = GetComponent<CarController>();
+        SteerManager = GetComponent<SteerManager>();
+        WheelsManager = GetComponent<WheelsManager>();
+        CarStats = GetComponent<CarStats>();
+        engineController = GetComponent<EngineController>();
+        splineContainer = GameObject.FindWithTag("track")?.GetComponent<SplineContainer>();
+
         rigidbody = GetComponent<Rigidbody>();
+        centerOfMassTransform = transform.Find("CenterOfMass").transform;
         foreach (Transform i in gameObject.transform) {
             if (i.transform.name == "carColliders") {
                 wheelColliders = new WheelCollider[i.transform.childCount];
@@ -61,6 +86,14 @@ public class CarStateMachine : MonoBehaviour {
                     wheelTransforms[q] = i.transform.GetChild(q);
                 }
             }
+        }
+
+        // initial values 
+        if (centerOfMassTransform) {
+            print("found center of mass transform");
+            rigidbody.centerOfMass = centerOfMassTransform.localPosition;
+        } else {
+            print("failed to find center of mass transform");
         }
     }
     #endregion
@@ -82,6 +115,21 @@ public class CarStateMachine : MonoBehaviour {
             return false;
         }
     }
+    #endregion
+
+    #region inputs
+
+    public void OnMove(InputValue value) {
+        if (CompareTag("Player")) moveInput = value.Get<Vector2>();
+    }
+    public void OnJump(InputValue input) {
+        if (gameObject.CompareTag("Player")) isSpacebarPressed = input.isPressed;
+    }
+
+    public void OnSprint(InputValue value) {
+        if (CompareTag("Player")) isShiftPressed = value.isPressed;
+    }
+
     #endregion
 
 }

@@ -57,5 +57,5 @@
         "Temp/": true
     },
     "dotnet.defaultSolution": "car game.sln",
-    "git.ignoreLimitWarning": true
+    "git.ignoreLimitWarning": true,
 }

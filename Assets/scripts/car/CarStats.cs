@@ -8,11 +8,13 @@ public class CarStats : MonoBehaviour {
 
     #region variables , inspector
     public CarStateMachine carStateMachine;
-    public bool drawOnlyOnSelected = false;
 
     [Header("camera stats")]
     public List<Vector2> camraPositions = new(3);
     public Vector2 lookAtPoint = new(.42f, 1.5f);
+    [Range(0, 20)] public float fowDisplaceAmount = 0.1f;
+    [Range(0, 20)] public float fowDisplaceLerpSpeed = 1;
+    [Range(50,90)]public int inistalFow = 80;
 
     [Header("car stats")]
     public driveMode driveMode = driveMode.allWheelDrive;
@@ -20,14 +22,6 @@ public class CarStats : MonoBehaviour {
     [Tooltip("this will be used to add as a boost , this will only add power to the overall power of the car !")]
     [Range(0, 1000)] public int boostPowerNM = 100;
 
-    [Header("forces")]
-    public AnimationCurve downforceCurve;
-    [Tooltip("this will increase the sideways velocity while on high speed , more stability when turning!")]
-    [Range(0, 0.003f)] public float angularVelocityMultiplier = 0.0002f;
-    [Range(0, 0.001f)] public float linearVelocityMultiplier = 0.0002f;
-
-    [Header("Gizmos")]
-    [Range(0, .3f)] public float wireSphereRadius = .2f;
 
     // holder variables
     private Vector2 initialLookAtPoint;
@@ -70,9 +64,14 @@ public class CarStats : MonoBehaviour {
     #endregion
 
     #region Gizmos
-    private void OnDrawGizmosSelected() { if (drawOnlyOnSelected) GizmosLogic(); }
+    [Header("Gizmos")]
+    [Range(0, 1f)] public float wireSphereRadius = .2f;
+    public bool drawOnlyOnSelected = false;
+    public bool drawGizmos = true;
 
-    private void OnDrawGizmos() { if (!drawOnlyOnSelected) GizmosLogic(); }
+    private void OnDrawGizmosSelected() { if (drawOnlyOnSelected && drawGizmos) GizmosLogic(); }
+
+    private void OnDrawGizmos() { if (!drawOnlyOnSelected && drawGizmos) GizmosLogic(); }
 
     void GizmosLogic() {
         if (carStateMachine == null) {

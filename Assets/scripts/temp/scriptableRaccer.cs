@@ -1,10 +1,13 @@
 using System;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Splines;
 
 [RequireComponent(typeof(CarStateMachine))]
 public class scriptableRaccer : MonoBehaviour {
     private CarStateMachine stateMachine;
+
+    public Spline Map;
 
     public bool drawOnlyOnSelected = false;
     [Range(0, 1)] public float SphereRadius;
@@ -83,7 +86,7 @@ public class scriptableRaccer : MonoBehaviour {
 
         turnAmount = relative.x / relative.magnitude;   // actual turn wheel amount
 
-        brakeAmount = Mathf.Clamp(steerAffect * brakeMultiplier, 0, 1);  // actual brake vehiacle
+        brakeAmount = Mathf.Clamp(steerAffect * brakeMultiplier, 0, 1);  // actual brake vehicle
         angleMultiplier = tmpMultiplier * Mathf.Abs(steerAffect);
 
         currentSpeed = Math.Clamp(1 - angleMultiplier, .1f, 1);
